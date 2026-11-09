@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Lab 1.3 — Enable Platform Services :: AI-Powered Developer Platform on ARO</title>
+    <link rel="prev" href="lab_2_workers.html">
+    <link rel="next" href="lab_2_foundry.html">
+    <meta name="generator" content="Antora 3.1.15">
+    <link rel="stylesheet" href="../../_/css/site.css">
+<link rel="icon" href="../../_/img/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://demo.redhat.com" target="_blank" style="margin-left: 5%;">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1508.5 178.739" style="width: 278px;"><g fill="#fff"><path d="M316.6 63.2v-56H342a21.279 21.279 0 0 1 7.8 1.3 18.111 18.111 0 0 1 5.9 3.5 15.577 15.577 0 0 1 5 11.8 15.051 15.051 0 0 1-3.1 9.5 16.836 16.836 0 0 1-8.4 5.8l12.5 24.1h-9.3l-11.6-23H325v23Zm24.7-48.6H325v18.7h16.3q5.25 0 8.1-2.7a8.7 8.7 0 0 0 2.8-6.6 8.7 8.7 0 0 0-2.8-6.6c-1.8-1.9-4.5-2.8-8.1-2.8ZM364.1 42.8a20.674 20.674 0 0 1 1.6-8.2 20.288 20.288 0 0 1 4.3-6.7 19.92 19.92 0 0 1 6.5-4.5 19.718 19.718 0 0 1 8-1.6 18.463 18.463 0 0 1 7.8 1.6 18.677 18.677 0 0 1 6.2 4.5 20.927 20.927 0 0 1 4.1 6.8 23.2 23.2 0 0 1 1.5 8.4v2.3H372a13.822 13.822 0 0 0 4.6 8.4 13.6 13.6 0 0 0 9.1 3.3 15.553 15.553 0 0 0 5.7-1 12.858 12.858 0 0 0 4.6-2.6l5.1 5a25.983 25.983 0 0 1-7.4 4.1 24.69 24.69 0 0 1-8.4 1.3 21.306 21.306 0 0 1-8.4-1.6 22.763 22.763 0 0 1-6.8-4.4 20.788 20.788 0 0 1-4.5-6.7 23.2 23.2 0 0 1-1.5-8.4Zm20.2-14.2a11.527 11.527 0 0 0-8 3 13.046 13.046 0 0 0-4.2 7.8h24.2a13.091 13.091 0 0 0-4.2-7.8 11.106 11.106 0 0 0-7.8-3ZM443.1 63.2v-3.8a19.448 19.448 0 0 1-5.8 3.3 18.924 18.924 0 0 1-6.7 1.2 19.824 19.824 0 0 1-14.6-6.1 22.268 22.268 0 0 1-4.4-6.7 21.812 21.812 0 0 1 0-16.4A20.534 20.534 0 0 1 416 28a19.335 19.335 0 0 1 6.6-4.5 20.334 20.334 0 0 1 8.2-1.6 20.7 20.7 0 0 1 6.6 1 19.415 19.415 0 0 1 5.7 3V7.2l8-1.8v57.8Zm-25.2-20.4a13.718 13.718 0 0 0 4 10.1 13.45 13.45 0 0 0 9.8 4.1 14.956 14.956 0 0 0 6.4-1.3 15.954 15.954 0 0 0 4.9-3.6V33.6a14.988 14.988 0 0 0-4.9-3.5 15.271 15.271 0 0 0-6.4-1.3 13.423 13.423 0 0 0-9.9 4 13.806 13.806 0 0 0-3.9 10ZM478.1 63.2v-56h8.4v24h29.8v-24h8.4v56h-8.4V38.8h-29.8v24.4ZM547.2 64a16.483 16.483 0 0 1-10.8-3.5 11.037 11.037 0 0 1-4.2-8.9 10.375 10.375 0 0 1 4.7-9.2 20.76 20.76 0 0 1 11.8-3.2 27.841 27.841 0 0 1 5.8.6 27.374 27.374 0 0 1 5.3 1.6v-4.3a8.143 8.143 0 0 0-2.6-6.5 11.452 11.452 0 0 0-7.4-2.2 20.788 20.788 0 0 0-6 .9 34.616 34.616 0 0 0-6.6 2.6l-3-6a54.169 54.169 0 0 1 8.4-3.1 33.18 33.18 0 0 1 8.3-1.1c5.2 0 9.3 1.3 12.2 3.8s4.4 6.1 4.4 10.8v27h-7.8v-3.5a19.441 19.441 0 0 1-5.8 3.2 23.54 23.54 0 0 1-6.7 1Zm-7.3-12.6a5.646 5.646 0 0 0 2.6 4.8 11.193 11.193 0 0 0 6.6 1.8 16.256 16.256 0 0 0 5.9-1 14.449 14.449 0 0 0 4.9-2.9V47a19.778 19.778 0 0 0-4.8-1.8 24.933 24.933 0 0 0-5.7-.6 11.859 11.859 0 0 0-6.8 1.8 5.728 5.728 0 0 0-2.7 5ZM580.6 53.2v-24H572v-6.7h8.6V12.1l7.9-1.9v12.3h12v6.7h-12v22.1a5.94 5.94 0 0 0 1.4 4.4c.9.9 2.5 1.3 4.6 1.3a23.637 23.637 0 0 0 3-.2 10.857 10.857 0 0 0 2.8-.8v6.7a19.28 19.28 0 0 1-3.8.9 27.484 27.484 0 0 1-3.8.3c-3.9 0-7-.9-9-2.8-2-1.7-3.1-4.4-3.1-7.9Z"></path></g><path d="M127 90.2c12.5 0 30.6-2.6 30.6-17.5a12.678 12.678 0 0 0-.3-3.4L149.8 37c-1.7-7.1-3.2-10.3-15.7-16.6-9.7-5-30.8-13.1-37.1-13.1-5.8 0-7.5 7.5-14.4 7.5-6.7 0-11.6-5.6-17.9-5.6-6 0-9.9 4.1-12.9 12.5 0 0-8.4 23.7-9.5 27.2a4.216 4.216 0 0 0-.3 1.9c0 9.2 36.3 39.4 85 39.4Zm32.5-11.4c1.7 8.2 1.7 9.1 1.7 10.1 0 14-15.7 21.8-36.4 21.8-46.8 0-87.7-27.4-87.7-45.5a17.535 17.535 0 0 1 1.5-7.3C21.8 58.8 0 61.8 0 81c0 31.5 74.6 70.3 133.7 70.3 45.3 0 56.7-20.5 56.7-36.6-.1-12.8-11-27.3-30.9-35.9Z" fill="#e00"></path><path d="M159.5 78.8c1.7 8.2 1.7 9.1 1.7 10.1 0 14-15.7 21.8-36.4 21.8-46.8 0-87.7-27.4-87.7-45.5a17.535 17.535 0 0 1 1.5-7.3l3.7-9.1a4.877 4.877 0 0 0-.3 2c0 9.2 36.3 39.4 85 39.4 12.5 0 30.6-2.6 30.6-17.5a12.678 12.678 0 0 0-.3-3.4Z"></path><path d="M253.5 158.7a2.22 2.22 0 0 1-2.2-2.2V2.2a2.2 2.2 0 0 1 4.4 0v154.2a2.242 2.242 0 0 1-2.2 2.3Z" fill="#fff"></path><text data-name="Demo Platform" transform="translate(1186 149)" fill="#fff" font-size="82" font-family="'RedHatDisplay', 'Overpass', overpass, helvetica, arial, sans-serif" font-weight="700"><tspan x="-877.892" y="0">Demo Platform</tspan></text></svg>
+      </a>
+      <a class="navbar-item site-title" target="__blank" style="color: #fff !important;" href="../..">AI-Powered Developer Platform on ARO</a>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="modules" data-version="master">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html" class=" query-params-link">ARO Workshop</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Workshop Overview</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../100-setup/lab_1_access_aro.html">Act 0 — Get in</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="lab_1_operators.html">Lab 1.1 — Install All Operators</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="lab_2_workers.html">Lab 1.2 — Add CPU and GPU Workers</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="1">
+    <a class="nav-link" href="lab_3_platform_services.html">Lab 1.3 — Enable Platform Services</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="lab_2_foundry.html">Lab 1.4 — Deploy DeepSeek on Foundry</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="lab_3_openshift_ai_overview.html">Lab 1.5 — Publish DeepSeek through MaaS</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="lab_4_decision_model.html">Lab 1.6 — Serve d3-mini</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="lab_5_agents_md.html">Lab 1.7 — Prepare Developer Access</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="lab_6_card_scout.html">Lab 1.8 — Prepare Card Scout</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../300-developer/lab_1_devspace_launch.html">Lab 2.1 — Launch Your Dev Space</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../300-developer/lab_2_model_apis.html">Lab 2.2 — Test the Model APIs</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../300-developer/lab_3_opencode_dev.html">Lab 2.3 — Build and Ship Card Scout</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../400-observability/lab_1_llm_metrics.html">Lab 3.1 — Usage, Performance and Cost</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../400-observability/lab_2_agentops.html">Lab 3.2 — AgentOps: Tools, Traces and Evidence</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../conclusion.html">Conclusion &amp; Next Steps</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <span class="title">ARO Workshop</span>
+      <ul class="versions">
+        <li class="version is-current">
+          <a href="../index.html">master</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">ARO Workshop</a></li>
+    <li><a href="lab_3_platform_services.html">Lab 1.3 — Enable Platform Services</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<article class="doc">
+<h1 class="page">Lab 1.3 — Enable Platform Services</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><strong>Review preview — PR 32, not the published workshop.</strong>
+This page comes from commit <code>ebcde0ef63f873d183a56da9f1e63c22ea373e71</code> on branch <code>docs/aro-guided-workshop-pr-preview</code>.
+Read the changes and leave feedback in
+<a href="https://github.com/fjcloud/aro-ai-app-platform/pull/32">the pull request</a>.
+The production workshop on <code>main</code> is unchanged. The clone command in Act 0
+uses this review branch so its proposed manifests can be reviewed together.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_what_you_will_do_and_why"><a class="anchor" href="#_what_you_will_do_and_why"></a>What you will do and why</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><strong>Goal: Turn installed operators into usable services.</strong>
+A platform service is a running capability that applications and developers consume. You will create the browser IDE, OpenShift AI model-serving components, the Models-as-a-Service (MaaS) gateway and trace storage. MaaS puts one governed API in front of models: callers use a client API key and token allowance rather than the cloud provider’s account key. These services are shared prerequisites for the developer, not code that the developer must rebuild in every app.</p>
+</div>
+<div class="paragraph">
+<p><strong>Platform Engineer · bastion terminal.</strong> Operators reconcile instances; installing a subscription alone does not create an IDE or model platform. Enable the services now that the additional workers are ready. These are direct CLI calls against the supplied manifests.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_which_services_are_being_enabled"><a class="anchor" href="#_which_services_are_being_enabled"></a>Which services are being enabled?</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 40%;">
+<col style="width: 40%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Capability</th>
+<th class="tableblock halign-left valign-top">What starts</th>
+<th class="tableblock halign-left valign-top">Why it matters for the app</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Browser development</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Dev Spaces and its workspace controller</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The developer gets an editor and tools without configuring a laptop.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Model serving</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">OpenShift AI, KServe, NFD and the NVIDIA ClusterPolicy</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">KServe will start D3; the GPU components make the T4 allocatable.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Governed model access</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MaaS, an HTTPS gateway, Authorino and PostgreSQL</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Developers receive a client key and allowance, while provider keys remain on the platform.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Agent and evidence</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Gen AI studio, OGX, MLflow and monitoring</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The app can use tools and expose a trace that proves what happened.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The <strong>DataScienceCluster (DSC)</strong> is the administrator’s OpenShift AI configuration.
+Its operator turns enabled components into running controllers and services.
+This is created once here; the <code>dev</code> user will not recreate it in Dev Spaces.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_create_the_platform_instances"><a class="anchor" href="#_create_the_platform_instances"></a>Create the platform instances</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Generate database credentials once, then start PostgreSQL before enabling MaaS:</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><strong>Run in the bastion terminal</strong>: the existing browser terminal beside this guide in
+Cloud Terminal. Use the workshop checkout (<code>~/aro-ai-app-platform</code>). Stay signed
+in as <code>workshop-admin</code> for the platform labs; Act 0 explains the initial login.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh"># Generate or reuse the private database credentials without printing them.
+bash deploy/instances/configure-maas-database.sh
+# Start the persistent database required by MaaS key storage.
+oc apply -f deploy/instances/maas-postgres.yaml
+# Wait for the named deployment’s new pods to become available within the displayed timeout.
+oc rollout status deployment/postgres -n redhat-ai-gateway-infra --timeout=300s
+# Create the configured platform instances; their operators reconcile the running services.
+oc apply -k deploy/instances</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This creates Dev Spaces, OpenShift AI/KServe, MaaS, NFD and the NVIDIA ClusterPolicy. The OpenShift AI instance also enables MLflow, Gen AI studio and TrustyAI. PostgreSQL keeps MaaS keys on a 1 GiB persistent volume. The small helper generates or reuses credentials without printing them. This setup targets a fresh lab; it does not migrate an existing ephemeral database.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_bind_the_maas_gateway_to_this_cluster"><a class="anchor" href="#_bind_the_maas_gateway_to_this_cluster"></a>Bind the MaaS gateway to this cluster</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Read the actual apps domain and ingress certificate; there are no cluster IDs to replace.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><strong>Run in the bastion terminal</strong>: the existing browser terminal beside this guide in
+Cloud Terminal. Use the workshop checkout (<code>~/aro-ai-app-platform</code>). Stay signed
+in as <code>workshop-admin</code> for the platform labs; Act 0 explains the initial login.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh"># Read the cluster’s actual application domain, rather than copying another lab’s URL.
+APPS_DOMAIN=$(oc get ingress.config.openshift.io cluster -o jsonpath='{.spec.domain}')
+# Build the public MaaS hostname under that application domain.
+MAAS_HOST="maas.${APPS_DOMAIN}"
+# Read the configured ingress TLS Secret, or use the router’s default when none is named.
+INGRESS_CERT=$(oc get ingresscontroller default -n openshift-ingress-operator \
+  -o jsonpath='{.spec.defaultCertificate.name}')
+# Read the configured ingress TLS Secret, or use the router’s default when none is named.
+INGRESS_CERT=${INGRESS_CERT:-router-certs-default}
+# Confirm the named Secret exists; this command does not decode or print its credentials.
+oc get secret "$INGRESS_CERT" -n openshift-ingress
+
+# Build a JSON patch using this cluster’s host and certificate names.
+GATEWAY_PATCH=$(jq -cn --arg host "$MAAS_HOST" --arg cert "$INGRESS_CERT" '[
+  {op:"replace",path:"/spec/listeners/0/hostname",value:$host},
+  {op:"replace",path:"/spec/listeners/0/tls/certificateRefs/0/name",value:$cert}
+]')
+# Bind the MaaS HTTPS listener to this cluster’s host and ingress certificate.
+oc patch gateway maas-default-gateway -n openshift-ingress --type=json -p "$GATEWAY_PATCH"
+# Expose the HTTPS gateway through a TLS-passthrough OpenShift Route.
+oc create route passthrough maas-gateway -n openshift-ingress \
+  --service=maas-default-gateway-openshift-default --hostname="$MAAS_HOST" \
+  --port=https --insecure-policy=Redirect --dry-run=client -o yaml | oc apply -f -</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The passthrough Route sends ARO wildcard DNS traffic to the HTTPS gateway. The provider model is not deployed yet.</p>
+</div>
+<div class="paragraph">
+<p>The patch sets the listener hostname and the certificate reference from the
+values just read. <code>passthrough</code> forwards TLS to the gateway; <code>Redirect</code> upgrades
+plain HTTP. This is gateway access for the external DeepSeek model; it does not
+make the local D3 endpoint public.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_trust_the_cluster_service_ca"><a class="anchor" href="#_trust_the_cluster_service_ca"></a>Trust the cluster service CA</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Authorino authenticates MaaS requests and calls internal HTTPS services. Enable the service-CA-signed Authorino listener and trust the service CA for its outbound callbacks. The JSON patch preserves any existing volumes.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><strong>Run in the bastion terminal</strong>: the existing browser terminal beside this guide in
+Cloud Terminal. Use the workshop checkout (<code>~/aro-ai-app-platform</code>). Stay signed
+in as <code>workshop-admin</code> for the platform labs; Act 0 explains the initial login.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh"># Wait for the authentication service deployment to exist before configuring it.
+oc wait --for=create deployment/authorino -n kuadrant-system --timeout=600s
+# Record the serving-certificate or bootstrap setting used by the gateway authentication
+# service.
+oc annotate service authorino-authorino-authorization -n kuadrant-system \
+  service.beta.openshift.io/serving-cert-secret-name=authorino-server-cert --overwrite
+# Configure Authorino’s TLS or service-CA trust for internal HTTPS callbacks.
+oc patch authorino authorino -n kuadrant-system --type=merge \
+  -p '{"spec":{"listener":{"tls":{"enabled":true,"certSecretRef":{"name":"authorino-server-cert"}}}}}'
+# Record the serving-certificate or bootstrap setting used by the gateway authentication
+# service.
+oc annotate gateway maas-default-gateway -n openshift-ingress \
+  security.opendatahub.io/authorino-tls-bootstrap=true --overwrite
+# Build a CA-volume patch that preserves any existing Authorino volumes.
+oc get authorino authorino -n kuadrant-system -o json | jq '{spec:{volumes:
+  ((.spec.volumes // {}) | .items =
+    ((.items // [] | map(select(.name != "workshop-service-ca"))) + [{
+      name:"workshop-service-ca",mountPath:"/etc/ssl/certs/openshift-service-ca",
+      configMaps:["openshift-service-ca.crt"],
+      items:[{key:"service-ca.crt",path:"service-ca-bundle.crt"}]
+    }]))
+}}' &gt; state/authorino-service-ca.json
+# Configure Authorino’s TLS or service-CA trust for internal HTTPS callbacks.
+oc patch authorino authorino -n kuadrant-system --type=merge \
+  --patch-file=state/authorino-service-ca.json
+# Make Authorino trust the mounted cluster service CA on outbound TLS requests.
+oc set env deployment/authorino -n kuadrant-system \
+  SSL_CERT_FILE=/etc/ssl/certs/openshift-service-ca/service-ca-bundle.crt \
+  REQUESTS_CA_BUNDLE=/etc/ssl/certs/openshift-service-ca/service-ca-bundle.crt
+# Wait for the named deployment’s new pods to become available within the displayed timeout.
+oc rollout status deployment/authorino -n kuadrant-system --timeout=180s</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Gateway API CRDs were prepared in Lab 1.1. Kuadrant can reconcile its filters without recycling its controller.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><strong>Initial service startup usually takes 5–15 minutes.</strong> PostgreSQL’s first wait
+allows 5 minutes; OpenShift AI initialization/component waits each allow 20
+minutes; MLflow’s first migration and startup allow 15 minutes. Output that says
+<code>Waiting for &#8230;&#8203;</code> is expected during downloads and reconciliation. A timeout is
+not success: inspect the named resource and its pod events before continuing.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_enable_the_ui_traces_and_metrics"><a class="anchor" href="#_enable_the_ui_traces_and_metrics"></a>Enable the UI, traces and metrics</h2>
+<div class="sectionbody">
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><strong>Run in the bastion terminal</strong>: the existing browser terminal beside this guide in
+Cloud Terminal. Use the workshop checkout (<code>~/aro-ai-app-platform</code>). Stay signed
+in as <code>workshop-admin</code> for the platform labs; Act 0 explains the initial login.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh"># Wait for OpenShift AI initialization to complete.
+oc wait dsci/default-dsci --for=condition=Ready --timeout=1200s
+# Wait until the enabled OpenShift AI components report Ready.
+oc wait dsc/default-dsc --for=condition=Ready --timeout=1200s
+# Wait for the prerequisite object to exist before configuring or using it.
+oc wait --for=create odhdashboardconfig/odh-dashboard-config -n redhat-ods-applications --timeout=300s
+# Enable the model/MaaS and Gen AI studio pages in the operator-managed dashboard.
+oc patch odhdashboardconfig odh-dashboard-config -n redhat-ods-applications \
+  --type=merge --patch-file=deploy/instances/odh-dashboard-config.yaml
+# Wait for the custom-resource API needed by the next configuration step.
+oc wait crd/mlflows.mlflow.opendatahub.io --for=condition=Established --timeout=300s
+# Inspect the trace service’s readiness and web URL.
+oc get mlflow/mlflow &gt;/dev/null 2&gt;&amp;1 || oc apply -f deploy/agentops/mlflow.yaml
+# Wait for MLflow’s migration and serving deployment to become Available.
+oc wait mlflow/mlflow --for=condition=Available --timeout=900s
+# Wait for the prerequisite object to exist before configuring or using it.
+oc wait maastenantconfig/default-tenant -n models-as-a-service --for=condition=Ready --timeout=600s
+# Enable gateway authentication/quota observability for the supplied dashboard.
+oc patch kuadrant kuadrant -n kuadrant-system --type=merge \
+  -p '{"spec":{"observability":{"enable":true}}}'
+# Enable usage telemetry while avoiding individual-user metric labels.
+oc patch maastenantconfig default-tenant -n models-as-a-service --type=merge \
+  -p '{"spec":{"telemetry":{"enabled":true,"metrics":{"captureOrganization":true,"captureModelUsage":true,"captureUser":false,"captureGroup":false}}}}'
+# Install the prepared console dashboard; the queries are already supplied.
+oc apply -k deploy/observability
+# Make Authorino trust the mounted cluster service CA on outbound TLS requests.
+oc set env deployment/authorino -n kuadrant-system \
+  SSL_CERT_FILE=/etc/ssl/certs/openshift-service-ca/service-ca-bundle.crt \
+  REQUESTS_CA_BUNDLE=/etc/ssl/certs/openshift-service-ca/service-ca-bundle.crt
+# Wait for the named deployment’s new pods to become available within the displayed timeout.
+oc rollout status deployment/authorino -n kuadrant-system --timeout=180s
+# Wait until the HTTPS gateway has been programmed.
+oc wait gateway/maas-default-gateway -n openshift-ingress --for=condition=Programmed --timeout=600s
+# Wait for the browser IDE platform to become Active.
+oc wait checluster/devspaces -n openshift-operators --for=jsonpath='{.status.chePhase}'=Active --timeout=900s
+# Wait for the NVIDIA driver/device plugin to advertise one allocatable GPU.
+oc wait nodes -l node.kubernetes.io/instance-type=Standard_NC8as_T4_v3 \
+  --for=jsonpath='{.status.allocatable.nvidia\.com/gpu}'=1 --timeout=900s</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The cluster now has an IDE, delivery operators, the model platform and one allocatable GPU. Stop after any readiness failure; inspect Pending pods, operator conditions and capacity. No model is deployed yet.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_cache_the_workspace_images"><a class="anchor" href="#_cache_the_workspace_images"></a>Cache the workspace images</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Workspace images include a multi-gigabyte developer toolchain. Without a cache,
+the first developer has to wait for that download after opening the workspace.
+Caching moves the download into platform preparation, while the next model labs
+are running. It speeds up the handoff; it does not eliminate first-time home
+initialization or storage setup.</p>
+</div>
+<div class="paragraph">
+<p>Start the documented <a href="https://docs.redhat.com/en/documentation/red_hat_openshift_dev_spaces/3.28/html/administration_guide/assembly_caching-images-for-faster-workspace-start_administration_guide">Kubernetes Image Puller</a> now. It downloads the developer, editor, OpenCode and test-browser images on CPU workers while you prepare the models. Lab 1.1 installs its operator. Read the editor image from the installed Dev Spaces version rather than maintaining another image version.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><strong>Run in the bastion terminal</strong>: the existing browser terminal beside this guide in
+Cloud Terminal. Use the workshop checkout (<code>~/aro-ai-app-platform</code>). Stay signed
+in as <code>workshop-admin</code> for the platform labs; Act 0 explains the initial login.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh"># Read the editor image supplied by the installed Dev Spaces operator version.
+EDITOR_IMAGE=$(oc exec -n openshift-operators deployment/devspaces-operator -- \
+  cat /tmp/external_images.txt | sed -n '\|/code-rhel9@|{p;q;}')
+# Read the platform’s pinned OpenCode injector image from its tool registry.
+OPENCODE_IMAGE=$(oc get configmap ai-tool-registry -n openshift-operators -o json | \
+  jq -er '.data["registry.json"] | fromjson | .tools[] | select(.providerId=="opencodeai/opencode") | .injectorImage')
+# Stop before patching the cache if the installed image names could not be discovered.
+test -n "$EDITOR_IMAGE" &amp;&amp; test -n "$OPENCODE_IMAGE"
+# Configure image caching through the installed Dev Spaces instance.
+oc patch checluster devspaces -n openshift-operators --type=merge -p \
+  "$(jq -cn --arg images "dev=quay.io/devfile/universal-developer-image:latest;editor=${EDITOR_IMAGE};opencode=${OPENCODE_IMAGE};test-browser=mcr.microsoft.com/playwright:v1.56.1-noble" \
+    '{spec:{components:{imagePuller:{enable:true,spec:{images:$images,cachingCPURequest:"10m"}}}}}')"
+# Wait for the prerequisite object to exist before configuring or using it.
+oc wait --for=create daemonset/kubernetes-image-puller -n openshift-operators --timeout=180s
+# Inspect the named resource and its reported status before proceeding.
+oc get daemonset kubernetes-image-puller -n openshift-operators</code></pre>
+</div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><strong>Allow 3–10 minutes for the first cache download; slow registries can take longer.</strong>
+The initial DaemonSet <code>READY</code> count may be <code>0</code>. Leave it running during Labs
+1.4–1.8. Lab 2.1 waits up to 10 minutes for all cache pods before opening Dev Spaces.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The first download still takes time; it happens before the developer starts. The GPU taint keeps this cache on CPU workers. Leave it running and continue with Foundry.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_open_the_platform_uis"><a class="anchor" href="#_open_the_platform_uis"></a>Open the platform UIs</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Print the URLs rather than trying to guess this lab’s cluster domain:</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><strong>Run in the bastion terminal</strong>: the existing browser terminal beside this guide in
+Cloud Terminal. Use the workshop checkout (<code>~/aro-ai-app-platform</code>). Stay signed
+in as <code>workshop-admin</code> for the platform labs; Act 0 explains the initial login.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh"># Show the OpenShift console for the current cluster.
+oc whoami --show-console
+# Read the wildcard domain assigned to applications on this cluster.
+APPS_DOMAIN=$(oc get ingress.config.openshift.io cluster -o jsonpath='{.spec.domain}')
+# Print the OpenShift AI 3.5 entry point; this contains no credential.
+printf 'OpenShift AI: https://rh-ai.%s\n' "$APPS_DOMAIN"</code></pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Open the console as <code>workshop-admin</code>, using your password from Act 0.</p>
+</li>
+<li>
+<p>Click the <strong>nine-dot application launcher</strong> in the top-right header and choose
+<strong>Red Hat OpenShift AI</strong>, or use the printed OpenShift AI URL.</p>
+</li>
+<li>
+<p>If asked to authenticate, select <strong>workshop</strong> and use the same <code>workshop-admin</code>
+password. Close the welcome tour. Verify the account in the user menu.</p>
+</li>
+<li>
+<p>Look for <strong>AI hub</strong>, <strong>Gen AI studio</strong> and <strong>Settings</strong>. No workshop model should be
+expected yet; Labs 1.4–1.6 create and publish those models.</p>
+</li>
+</ol>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<a class="image" href="../_images/card-scout-dashboard-tokens.png"><img src="../_images/card-scout-dashboard-tokens.png" alt="OpenShift console layout with the application launcher at the top right"></a>
+</div>
+<div class="title">Figure 1. Example OpenShift console from a completed lab: the nine-dot application launcher is in the top-right header. Metrics appear later in the workshop.</div>
+</div>
+<div class="paragraph">
+<p>If a navigation item is missing, stay in the bastion: check DSC readiness and the
+<code>odh-dashboard-config</code> patch above. Do not install a second OpenShift AI instance.
+The documented <a href="https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/installing_and_uninstalling_openshift_ai_self-managed/accessing-the-dashboard_install">dashboard access procedure</a>
+uses the same application launcher and OpenShift credentials.</p>
+</div>
+<div class="paragraph">
+<p>Continue to <a href="lab_2_foundry.html" class="xref page">Lab 1.4 — Deploy DeepSeek on Foundry</a>.</p>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="lab_2_workers.html" class="query-params-link">Lab 1.2 — Add CPU and GPU Workers</a></span>
+  <span class="next"><a href="lab_2_foundry.html" class="query-params-link">Lab 1.4 — Deploy DeepSeek on Foundry</a></span>
+</nav>
+</article>
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>  </div>
+</main>
+</div>
+<footer class="footer">
+  <a href="https://demo.redhat.com" target="_blank" class="poweredBy"><p>Powered by</p><div class="labInfo_poweredBy" style="display: block; width: 260px;"><svg class="labInfo_poweredByLogo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1508.5 178.739"><g fill="#111"><path d="M316.6 63.2v-56H342a21.279 21.279 0 0 1 7.8 1.3 18.111 18.111 0 0 1 5.9 3.5 15.577 15.577 0 0 1 5 11.8 15.051 15.051 0 0 1-3.1 9.5 16.836 16.836 0 0 1-8.4 5.8l12.5 24.1h-9.3l-11.6-23H325v23Zm24.7-48.6H325v18.7h16.3q5.25 0 8.1-2.7a8.7 8.7 0 0 0 2.8-6.6 8.7 8.7 0 0 0-2.8-6.6c-1.8-1.9-4.5-2.8-8.1-2.8ZM364.1 42.8a20.674 20.674 0 0 1 1.6-8.2 20.288 20.288 0 0 1 4.3-6.7 19.92 19.92 0 0 1 6.5-4.5 19.718 19.718 0 0 1 8-1.6 18.463 18.463 0 0 1 7.8 1.6 18.677 18.677 0 0 1 6.2 4.5 20.927 20.927 0 0 1 4.1 6.8 23.2 23.2 0 0 1 1.5 8.4v2.3H372a13.822 13.822 0 0 0 4.6 8.4 13.6 13.6 0 0 0 9.1 3.3 15.553 15.553 0 0 0 5.7-1 12.858 12.858 0 0 0 4.6-2.6l5.1 5a25.983 25.983 0 0 1-7.4 4.1 24.69 24.69 0 0 1-8.4 1.3 21.306 21.306 0 0 1-8.4-1.6 22.763 22.763 0 0 1-6.8-4.4 20.788 20.788 0 0 1-4.5-6.7 23.2 23.2 0 0 1-1.5-8.4Zm20.2-14.2a11.527 11.527 0 0 0-8 3 13.046 13.046 0 0 0-4.2 7.8h24.2a13.091 13.091 0 0 0-4.2-7.8 11.106 11.106 0 0 0-7.8-3ZM443.1 63.2v-3.8a19.448 19.448 0 0 1-5.8 3.3 18.924 18.924 0 0 1-6.7 1.2 19.824 19.824 0 0 1-14.6-6.1 22.268 22.268 0 0 1-4.4-6.7 21.812 21.812 0 0 1 0-16.4A20.534 20.534 0 0 1 416 28a19.335 19.335 0 0 1 6.6-4.5 20.334 20.334 0 0 1 8.2-1.6 20.7 20.7 0 0 1 6.6 1 19.415 19.415 0 0 1 5.7 3V7.2l8-1.8v57.8Zm-25.2-20.4a13.718 13.718 0 0 0 4 10.1 13.45 13.45 0 0 0 9.8 4.1 14.956 14.956 0 0 0 6.4-1.3 15.954 15.954 0 0 0 4.9-3.6V33.6a14.988 14.988 0 0 0-4.9-3.5 15.271 15.271 0 0 0-6.4-1.3 13.423 13.423 0 0 0-9.9 4 13.806 13.806 0 0 0-3.9 10ZM478.1 63.2v-56h8.4v24h29.8v-24h8.4v56h-8.4V38.8h-29.8v24.4ZM547.2 64a16.483 16.483 0 0 1-10.8-3.5 11.037 11.037 0 0 1-4.2-8.9 10.375 10.375 0 0 1 4.7-9.2 20.76 20.76 0 0 1 11.8-3.2 27.841 27.841 0 0 1 5.8.6 27.374 27.374 0 0 1 5.3 1.6v-4.3a8.143 8.143 0 0 0-2.6-6.5 11.452 11.452 0 0 0-7.4-2.2 20.788 20.788 0 0 0-6 .9 34.616 34.616 0 0 0-6.6 2.6l-3-6a54.169 54.169 0 0 1 8.4-3.1 33.18 33.18 0 0 1 8.3-1.1c5.2 0 9.3 1.3 12.2 3.8s4.4 6.1 4.4 10.8v27h-7.8v-3.5a19.441 19.441 0 0 1-5.8 3.2 23.54 23.54 0 0 1-6.7 1Zm-7.3-12.6a5.646 5.646 0 0 0 2.6 4.8 11.193 11.193 0 0 0 6.6 1.8 16.256 16.256 0 0 0 5.9-1 14.449 14.449 0 0 0 4.9-2.9V47a19.778 19.778 0 0 0-4.8-1.8 24.933 24.933 0 0 0-5.7-.6 11.859 11.859 0 0 0-6.8 1.8 5.728 5.728 0 0 0-2.7 5ZM580.6 53.2v-24H572v-6.7h8.6V12.1l7.9-1.9v12.3h12v6.7h-12v22.1a5.94 5.94 0 0 0 1.4 4.4c.9.9 2.5 1.3 4.6 1.3a23.637 23.637 0 0 0 3-.2 10.857 10.857 0 0 0 2.8-.8v6.7a19.28 19.28 0 0 1-3.8.9 27.484 27.484 0 0 1-3.8.3c-3.9 0-7-.9-9-2.8-2-1.7-3.1-4.4-3.1-7.9Z"></path></g><path d="M127 90.2c12.5 0 30.6-2.6 30.6-17.5a12.678 12.678 0 0 0-.3-3.4L149.8 37c-1.7-7.1-3.2-10.3-15.7-16.6-9.7-5-30.8-13.1-37.1-13.1-5.8 0-7.5 7.5-14.4 7.5-6.7 0-11.6-5.6-17.9-5.6-6 0-9.9 4.1-12.9 12.5 0 0-8.4 23.7-9.5 27.2a4.216 4.216 0 0 0-.3 1.9c0 9.2 36.3 39.4 85 39.4Zm32.5-11.4c1.7 8.2 1.7 9.1 1.7 10.1 0 14-15.7 21.8-36.4 21.8-46.8 0-87.7-27.4-87.7-45.5a17.535 17.535 0 0 1 1.5-7.3C21.8 58.8 0 61.8 0 81c0 31.5 74.6 70.3 133.7 70.3 45.3 0 56.7-20.5 56.7-36.6-.1-12.8-11-27.3-30.9-35.9Z" fill="#e00"></path><path d="M159.5 78.8c1.7 8.2 1.7 9.1 1.7 10.1 0 14-15.7 21.8-36.4 21.8-46.8 0-87.7-27.4-87.7-45.5a17.535 17.535 0 0 1 1.5-7.3l3.7-9.1a4.877 4.877 0 0 0-.3 2c0 9.2 36.3 39.4 85 39.4 12.5 0 30.6-2.6 30.6-17.5a12.678 12.678 0 0 0-.3-3.4Z"></path><path d="M253.5 158.7a2.22 2.22 0 0 1-2.2-2.2V2.2a2.2 2.2 0 0 1 4.4 0v154.2a2.242 2.242 0 0 1-2.2 2.3Z" fill="#111"></path><text data-name="Demo Platform" transform="translate(1186 149)" fill="#111" font-size="82" font-family="'RedHatDisplay', 'Overpass', overpass, helvetica, arial, sans-serif" font-weight="700"><tspan x="-877.892" y="0">Demo Platform</tspan></text></svg></div></div>
+</footer>
+<script src="../../_/js/vendor/clipboard.js"></script>
+<script src="../../_/js/site.js"></script>
+<script async src="../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

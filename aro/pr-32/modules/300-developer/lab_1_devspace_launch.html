@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Lab 2.1 — Launch Your Dev Space :: AI-Powered Developer Platform on ARO</title>
+    <link rel="prev" href="../200-platform/lab_6_card_scout.html">
+    <link rel="next" href="lab_2_model_apis.html">
+    <meta name="generator" content="Antora 3.1.15">
+    <link rel="stylesheet" href="../../_/css/site.css">
+<link rel="icon" href="../../_/img/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://demo.redhat.com" target="_blank" style="margin-left: 5%;">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1508.5 178.739" style="width: 278px;"><g fill="#fff"><path d="M316.6 63.2v-56H342a21.279 21.279 0 0 1 7.8 1.3 18.111 18.111 0 0 1 5.9 3.5 15.577 15.577 0 0 1 5 11.8 15.051 15.051 0 0 1-3.1 9.5 16.836 16.836 0 0 1-8.4 5.8l12.5 24.1h-9.3l-11.6-23H325v23Zm24.7-48.6H325v18.7h16.3q5.25 0 8.1-2.7a8.7 8.7 0 0 0 2.8-6.6 8.7 8.7 0 0 0-2.8-6.6c-1.8-1.9-4.5-2.8-8.1-2.8ZM364.1 42.8a20.674 20.674 0 0 1 1.6-8.2 20.288 20.288 0 0 1 4.3-6.7 19.92 19.92 0 0 1 6.5-4.5 19.718 19.718 0 0 1 8-1.6 18.463 18.463 0 0 1 7.8 1.6 18.677 18.677 0 0 1 6.2 4.5 20.927 20.927 0 0 1 4.1 6.8 23.2 23.2 0 0 1 1.5 8.4v2.3H372a13.822 13.822 0 0 0 4.6 8.4 13.6 13.6 0 0 0 9.1 3.3 15.553 15.553 0 0 0 5.7-1 12.858 12.858 0 0 0 4.6-2.6l5.1 5a25.983 25.983 0 0 1-7.4 4.1 24.69 24.69 0 0 1-8.4 1.3 21.306 21.306 0 0 1-8.4-1.6 22.763 22.763 0 0 1-6.8-4.4 20.788 20.788 0 0 1-4.5-6.7 23.2 23.2 0 0 1-1.5-8.4Zm20.2-14.2a11.527 11.527 0 0 0-8 3 13.046 13.046 0 0 0-4.2 7.8h24.2a13.091 13.091 0 0 0-4.2-7.8 11.106 11.106 0 0 0-7.8-3ZM443.1 63.2v-3.8a19.448 19.448 0 0 1-5.8 3.3 18.924 18.924 0 0 1-6.7 1.2 19.824 19.824 0 0 1-14.6-6.1 22.268 22.268 0 0 1-4.4-6.7 21.812 21.812 0 0 1 0-16.4A20.534 20.534 0 0 1 416 28a19.335 19.335 0 0 1 6.6-4.5 20.334 20.334 0 0 1 8.2-1.6 20.7 20.7 0 0 1 6.6 1 19.415 19.415 0 0 1 5.7 3V7.2l8-1.8v57.8Zm-25.2-20.4a13.718 13.718 0 0 0 4 10.1 13.45 13.45 0 0 0 9.8 4.1 14.956 14.956 0 0 0 6.4-1.3 15.954 15.954 0 0 0 4.9-3.6V33.6a14.988 14.988 0 0 0-4.9-3.5 15.271 15.271 0 0 0-6.4-1.3 13.423 13.423 0 0 0-9.9 4 13.806 13.806 0 0 0-3.9 10ZM478.1 63.2v-56h8.4v24h29.8v-24h8.4v56h-8.4V38.8h-29.8v24.4ZM547.2 64a16.483 16.483 0 0 1-10.8-3.5 11.037 11.037 0 0 1-4.2-8.9 10.375 10.375 0 0 1 4.7-9.2 20.76 20.76 0 0 1 11.8-3.2 27.841 27.841 0 0 1 5.8.6 27.374 27.374 0 0 1 5.3 1.6v-4.3a8.143 8.143 0 0 0-2.6-6.5 11.452 11.452 0 0 0-7.4-2.2 20.788 20.788 0 0 0-6 .9 34.616 34.616 0 0 0-6.6 2.6l-3-6a54.169 54.169 0 0 1 8.4-3.1 33.18 33.18 0 0 1 8.3-1.1c5.2 0 9.3 1.3 12.2 3.8s4.4 6.1 4.4 10.8v27h-7.8v-3.5a19.441 19.441 0 0 1-5.8 3.2 23.54 23.54 0 0 1-6.7 1Zm-7.3-12.6a5.646 5.646 0 0 0 2.6 4.8 11.193 11.193 0 0 0 6.6 1.8 16.256 16.256 0 0 0 5.9-1 14.449 14.449 0 0 0 4.9-2.9V47a19.778 19.778 0 0 0-4.8-1.8 24.933 24.933 0 0 0-5.7-.6 11.859 11.859 0 0 0-6.8 1.8 5.728 5.728 0 0 0-2.7 5ZM580.6 53.2v-24H572v-6.7h8.6V12.1l7.9-1.9v12.3h12v6.7h-12v22.1a5.94 5.94 0 0 0 1.4 4.4c.9.9 2.5 1.3 4.6 1.3a23.637 23.637 0 0 0 3-.2 10.857 10.857 0 0 0 2.8-.8v6.7a19.28 19.28 0 0 1-3.8.9 27.484 27.484 0 0 1-3.8.3c-3.9 0-7-.9-9-2.8-2-1.7-3.1-4.4-3.1-7.9Z"></path></g><path d="M127 90.2c12.5 0 30.6-2.6 30.6-17.5a12.678 12.678 0 0 0-.3-3.4L149.8 37c-1.7-7.1-3.2-10.3-15.7-16.6-9.7-5-30.8-13.1-37.1-13.1-5.8 0-7.5 7.5-14.4 7.5-6.7 0-11.6-5.6-17.9-5.6-6 0-9.9 4.1-12.9 12.5 0 0-8.4 23.7-9.5 27.2a4.216 4.216 0 0 0-.3 1.9c0 9.2 36.3 39.4 85 39.4Zm32.5-11.4c1.7 8.2 1.7 9.1 1.7 10.1 0 14-15.7 21.8-36.4 21.8-46.8 0-87.7-27.4-87.7-45.5a17.535 17.535 0 0 1 1.5-7.3C21.8 58.8 0 61.8 0 81c0 31.5 74.6 70.3 133.7 70.3 45.3 0 56.7-20.5 56.7-36.6-.1-12.8-11-27.3-30.9-35.9Z" fill="#e00"></path><path d="M159.5 78.8c1.7 8.2 1.7 9.1 1.7 10.1 0 14-15.7 21.8-36.4 21.8-46.8 0-87.7-27.4-87.7-45.5a17.535 17.535 0 0 1 1.5-7.3l3.7-9.1a4.877 4.877 0 0 0-.3 2c0 9.2 36.3 39.4 85 39.4 12.5 0 30.6-2.6 30.6-17.5a12.678 12.678 0 0 0-.3-3.4Z"></path><path d="M253.5 158.7a2.22 2.22 0 0 1-2.2-2.2V2.2a2.2 2.2 0 0 1 4.4 0v154.2a2.242 2.242 0 0 1-2.2 2.3Z" fill="#fff"></path><text data-name="Demo Platform" transform="translate(1186 149)" fill="#fff" font-size="82" font-family="'RedHatDisplay', 'Overpass', overpass, helvetica, arial, sans-serif" font-weight="700"><tspan x="-877.892" y="0">Demo Platform</tspan></text></svg>
+      </a>
+      <a class="navbar-item site-title" target="__blank" style="color: #fff !important;" href="../..">AI-Powered Developer Platform on ARO</a>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="modules" data-version="master">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html" class=" query-params-link">ARO Workshop</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Workshop Overview</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../100-setup/lab_1_access_aro.html">Act 0 — Get in</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../200-platform/lab_1_operators.html">Lab 1.1 — Install All Operators</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../200-platform/lab_2_workers.html">Lab 1.2 — Add CPU and GPU Workers</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../200-platform/lab_3_platform_services.html">Lab 1.3 — Enable Platform Services</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../200-platform/lab_2_foundry.html">Lab 1.4 — Deploy DeepSeek on Foundry</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../200-platform/lab_3_openshift_ai_overview.html">Lab 1.5 — Publish DeepSeek through MaaS</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../200-platform/lab_4_decision_model.html">Lab 1.6 — Serve d3-mini</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../200-platform/lab_5_agents_md.html">Lab 1.7 — Prepare Developer Access</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../200-platform/lab_6_card_scout.html">Lab 1.8 — Prepare Card Scout</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item is-current-page" data-depth="1">
+    <a class="nav-link" href="lab_1_devspace_launch.html">Lab 2.1 — Launch Your Dev Space</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="lab_2_model_apis.html">Lab 2.2 — Test the Model APIs</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="lab_3_opencode_dev.html">Lab 2.3 — Build and Ship Card Scout</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../400-observability/lab_1_llm_metrics.html">Lab 3.1 — Usage, Performance and Cost</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../400-observability/lab_2_agentops.html">Lab 3.2 — AgentOps: Tools, Traces and Evidence</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../conclusion.html">Conclusion &amp; Next Steps</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <span class="title">ARO Workshop</span>
+      <ul class="versions">
+        <li class="version is-current">
+          <a href="../index.html">master</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">ARO Workshop</a></li>
+    <li><a href="lab_1_devspace_launch.html">Lab 2.1 — Launch Your Dev Space</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<article class="doc">
+<h1 class="page">Lab 2.1 — Launch Your Dev Space</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><strong>Review preview — PR 32, not the published workshop.</strong>
+This page comes from commit <code>ebcde0ef63f873d183a56da9f1e63c22ea373e71</code> on branch <code>docs/aro-guided-workshop-pr-preview</code>.
+Read the changes and leave feedback in
+<a href="https://github.com/fjcloud/aro-ai-app-platform/pull/32">the pull request</a>.
+The production workshop on <code>main</code> is unchanged. The clone command in Act 0
+uses this review branch so its proposed manifests can be reviewed together.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_what_you_will_do_and_why"><a class="anchor" href="#_what_you_will_do_and_why"></a>What you will do and why</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><strong>Goal: Start the developer experience with the dev account.</strong>
+Open an isolated browser workspace containing the editor, CLI tools, model configuration and app template. You consume the platform built in Act 1; you do not install OpenShift AI, create a DataScienceCluster, or grant pod security permissions. This is the handoff from platform engineering to application development.</p>
+</div>
+<div class="paragraph">
+<p>Welcome to Act 2. You are now the <strong>Developer</strong>. Everything you need — editor, terminal, and OpenCode pointed at DeepSeek-V4 Pro — is in the browser through <strong>OpenShift Dev Spaces</strong>. No laptop installation is required. The model is published through the OpenShift AI MaaS gateway prepared in Act 1.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><strong>Estimated time:</strong> 10 minutes<br>
+<strong>Persona:</strong> Developer<br>
+<strong>What you need:</strong> The platform prepared in Act 1 and your cluster login</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_what_is_openshift_dev_spaces"><a class="anchor" href="#_what_is_openshift_dev_spaces"></a>What is OpenShift Dev Spaces?</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>OpenShift Dev Spaces provides <strong>cloud-based developer workspaces</strong> — VS Code-compatible IDEs that run as pods in the cluster. Key benefits:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Zero local setup:</strong> the workspace comes pre-configured; just open a browser</p>
+</li>
+<li>
+<p><strong>Consistent environment:</strong> every developer gets the same tools, versions, and configuration</p>
+</li>
+<li>
+<p><strong>Model access:</strong> the workspace calls MaaS at <code>$OPENAI_BASE_URL</code> with an injected MaaS key — same chat-completions JSON, pay per token</p>
+</li>
+<li>
+<p><strong>Persistent storage:</strong> your work survives closing the browser, but remains tied to the lifetime of this RHDP environment. Export anything you want to keep before it expires</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_get_the_dev_spaces_url"><a class="anchor" href="#_get_the_dev_spaces_url"></a>Get the Dev Spaces URL</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The models and runtime agent backend are now ready. In the <strong>bastion terminal</strong>, generate the workspace launch link:</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><strong>Run in the bastion terminal</strong>: the existing browser terminal beside this guide in
+Cloud Terminal. Use the workshop checkout (<code>~/aro-ai-app-platform</code>). Stay signed
+in as <code>workshop-admin</code> for the platform labs; Act 0 explains the initial login.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh"># Read the operator-reported browser IDE URL for this cluster.
+DEVSPACES_URL=$(oc get checluster devspaces -n openshift-operators -o jsonpath='{.status.cheURL}')
+# Wait for all CPU-node image caches before launching the workspace.
+oc rollout status daemonset/kubernetes-image-puller -n openshift-operators --timeout=600s
+# Select the ARO template branch; it contains scaffolding and tests, not a finished app.
+TEMPLATE_URL=https://github.com/fjcloud/go-app-template/tree/aro-card-scout
+# Print the prepared browser launch URL; no credential is included.
+printf '%s/#%s?ai-provider=opencodeai/opencode\n' "${DEVSPACES_URL%/}" "$TEMPLATE_URL"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Open the printed link in your browser. It clones the Card Scout template and creates the workspace from its <code>devfile.yaml</code>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The <code>#&lt;template-url&gt;</code> suffix tells Dev Spaces to clone the template and create a workspace from its <code>devfile.yaml</code> automatically. OpenCode is injected by the platform. The project <code>opencode.json</code> already pins DeepSeek through MaaS. The workspace comes pre-loaded with a short <code>AGENTS.md</code>, <code>APP_CONTRACT.md</code>, acceptance tests, <code>DELIVERY.md</code> and the delivery scaffold — you only need to write the application code.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Open that URL in your browser.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_switch_to_the_developer_account"><a class="anchor" href="#_switch_to_the_developer_account"></a>Switch to the developer account</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Choose the <strong>workshop</strong> identity provider and sign in as <code>dev</code> with the developer password created in Act 0. The workshop catalog password is different. Use the separate developer browser
+profile/private window from Lab 1.7. If the browser logs you straight in as
+<code>workshop-admin</code>, sign out or change browser profile before creating a workspace.
+The project <strong>dev-devspaces</strong> is already prepared for <code>dev</code>. Keep the OpenShift password out of OpenCode and Git; the developer terminal receives its own scoped identity.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_log_in_and_create_your_workspace"><a class="anchor" href="#_log_in_and_create_your_workspace"></a>Log In and Create Your Workspace</h2>
+<div class="sectionbody">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>You will be redirected to OpenShift SSO. Choose <strong>workshop</strong> and log in as <code>dev</code>.</p>
+</li>
+<li>
+<p>On first access, click <strong>Log in with OpenShift</strong> if prompted, then <strong>Allow selected permissions</strong> for the Dev Spaces client. The redirect should return to your lab&#8217;s Dev Spaces address.</p>
+</li>
+<li>
+<p>If Dev Spaces asks whether you trust the repository, confirm <strong>Continue</strong> for <code>fjcloud/go-app-template</code>. This starts workspace creation.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>If the factory reports <strong>Devfile hasn&#8217;t been resolved in the last 20 seconds</strong>, use <strong>Click to try again</strong>. Keep the repository&#8217;s devfile; do not choose <strong>Continue with default devfile</strong>.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>The launch URL selects <strong>OpenCode</strong> automatically. If a Create Workspace form appears, confirm <strong>OpenCode</strong> under <strong>AI Provider</strong>. This injects the CLI at start; you do not install it yourself. You will see a progress screen:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">Starting workspace...
+Pulling universal developer image...
+Injecting OpenCode...
+Running postStart commands...
+  ✓ Installing the ephemeral Git client</code></pre>
+</div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><strong>Allow 2–5 minutes with cached images; the first start can take up to 15 minutes.</strong>
+Storage and the persistent home still need initialization. The cache wait above
+permits 10 minutes before launch. Keep the start screen open; do not create extra
+workspaces while one is starting. A timeout or an error in <strong>Events</strong> is a failure
+to inspect, not proof that the IDE is ready.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>When the workspace is ready, a VS Code-like editor opens in the browser. You will see:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>A file explorer on the left</p>
+</li>
+<li>
+<p>A terminal at the bottom</p>
+</li>
+<li>
+<p>OpenCode available on <code>PATH</code> (injected by Dev Spaces, not by the template)</p>
+<div class="paragraph">
+<p>Do <strong>not</strong> sign in to GitHub Copilot. Che Code ships Copilot as a built-in; the platform disables it. Do not install Continue. Use OpenCode in the terminal to call DeepSeek-V4 Pro.</p>
+</div>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>If the editor opens in <strong>Restricted Mode</strong>, open <strong>Manage Workspace Trust</strong>, trust this repository, and confirm. The IDE may reload before its terminal becomes available.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_open_the_terminal_inside_dev_spaces"><a class="anchor" href="#_open_the_terminal_inside_dev_spaces"></a>Open the terminal inside Dev Spaces</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In the browser editor’s top menu, choose <strong>Terminal → New Terminal</strong>. A shell opens
+in the bottom panel. If the menu is collapsed, use the editor’s main menu or
+<span class="keyseq"><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd></span>, then run <strong>Terminal: Create New Terminal</strong>. This is the Dev Spaces
+terminal; the WeTTY terminal beside this guide is still the bastion.</p>
+</div>
+<div class="paragraph">
+<p>Run developer commands here, in <code>$PROJECT_SOURCE</code>. Shell blocks go into this
+terminal; natural-language prompt blocks go into OpenCode after it starts.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_check_your_scoped_cli_access"><a class="anchor" href="#_check_your_scoped_cli_access"></a>Check your scoped CLI access</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The platform injects a separate developer kubeconfig into the workspace. Browser SSO and CLI access are separate; you do not paste an administrator token into the terminal or OpenCode.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><strong>Run inside Dev Spaces</strong>, not in the bastion: open <strong>Terminal → New Terminal</strong> in
+the browser editor and use the project directory (<code>$PROJECT_SOURCE</code>). Sign in
+to the Dev Spaces website as <code>dev</code>; its terminal receives a separate, limited
+<code>workshop-developer</code> service account for CLI commands.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh"># Show the CLI identity actually used by this terminal.
+oc whoami
+# Expect yes: the scoped identity can start application builds.
+oc auth can-i create pipelineruns -n "${APP_NAME}-build"
+# Expect yes: this identity can deploy in the application project.
+oc auth can-i create deployments -n "${APP_NAME}-dev"
+# Expect no: the developer has no permission to run privileged build pods.
+oc auth can-i use scc/privileged -n "${APP_NAME}-build"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Expect the <code>workshop-developer</code> service account, then <code>yes</code>, <code>yes</code>, and <code>no</code>. The final <code>no</code> is intentional: OpenCode must not grant SCCs or use privileged containers. If build/deploy access is missing, ask the facilitator to rerun <code>scripts/prepare-developer.py</code> and restart the workspace. Keep the scoped identity; an administrator login is not a workaround.</p>
+</div>
+<div class="paragraph">
+<p>The template also includes a local-only browser component for acceptance tests.
+OpenCode prepares it with <code>npm ci &amp;&amp; npm run setup</code>. No system-package installation
+is needed in the developer container. The generated app remains a Go application.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_verify_opencode_is_running"><a class="anchor" href="#_verify_opencode_is_running"></a>Verify OpenCode is Running</h2>
+<div class="sectionbody">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Open a terminal in the workspace (<strong>Terminal → New Terminal</strong> or press <span class="keyseq"><kbd>Ctrl</kbd>+<kbd>`</kbd></span>).</p>
+</li>
+<li>
+<p>Check that OpenCode is on <code>PATH</code> (injected) and that ephemeral Git is configured (<code>$GIT_SERVER</code>):</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><strong>Run inside Dev Spaces</strong>, not in the bastion: open <strong>Terminal → New Terminal</strong> in
+the browser editor and use the project directory (<code>$PROJECT_SOURCE</code>). Sign in
+to the Dev Spaces website as <code>dev</code>; its terminal receives a separate, limited
+<code>workshop-developer</code> service account for CLI commands.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</li>
+</ol>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh"># Verify that OpenCode and the platform Git client are available in this workspace.
+opencode --version &amp;&amp; command -v gitpop &amp;&amp; echo "GIT_SERVER=$GIT_SERVER"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>+
+.Sample Output</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-text hljs" data-lang="text">1.x.x
+/home/user/.local/bin/gitpop
+GIT_SERVER=https://git.&lt;workshop-domain&gt;</code></pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Check the project model configuration against the platform. The template&#8217;s <code>opencode.json</code> wins over the platform file; both should pin DeepSeek through MaaS. The following also updates older workspaces when needed. This file contains environment references; it contains no key. From the workspace terminal:</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><strong>Run inside Dev Spaces</strong>, not in the bastion: open <strong>Terminal → New Terminal</strong> in
+the browser editor and use the project directory (<code>$PROJECT_SOURCE</code>). Sign in
+to the Dev Spaces website as <code>dev</code>; its terminal receives a separate, limited
+<code>workshop-developer</code> service account for CLI commands.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</li>
+</ol>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh"># Use the cloned project directory inside Dev Spaces.
+cd "${PROJECT_SOURCE}"
+# Align the project’s model configuration with the injected platform configuration; it
+# contains environment references, not a key.
+cp "${XDG_CONFIG_HOME:-$HOME/.config}/opencode/opencode.json" opencode.json
+# Commit only when the injected configuration differs from the template.
+if ! git diff --quiet HEAD -- opencode.json; then
+  # Stage only the intended model-configuration update.
+  git add opencode.json
+  # Commit the configuration change using the workshop developer identity.
+  git -c user.name="Workshop Developer" -c user.email="dev@workshop.local" \
+    commit -m "Use DeepSeek through the workshop MaaS gateway"
+fi</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>+
+. Test both model APIs in <strong>Lab 2.2</strong> before starting OpenCode. Your MaaS key is already injected; do not print it.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_check_the_workspace_identity_in_the_ui"><a class="anchor" href="#_check_the_workspace_identity_in_the_ui"></a>Check the workspace identity in the UI</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Open the Dev Spaces dashboard in the same developer browser session. Confirm
+that the user menu shows <strong>dev</strong> and that the workspace belongs to <strong>dev-devspaces</strong>.
+In the editor, <code>oc whoami</code> should show
+<code>system:serviceaccount:card-scout-dev:workshop-developer</code>. These different names
+are expected: the browser creates the workspace as the person; the CLI uses a
+limited service account so OpenCode cannot administer the cluster.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_understanding_the_opencode_configuration"><a class="anchor" href="#_understanding_the_opencode_configuration"></a>Understanding the OpenCode Configuration</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>OpenCode reads <strong>project</strong> <code>opencode.json</code> first (it overrides the platform mount under <code>~/.config/opencode</code>). Verify the file in the template:</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><strong>Run inside Dev Spaces</strong>, not in the bastion: open <strong>Terminal → New Terminal</strong> in
+the browser editor and use the project directory (<code>$PROJECT_SOURCE</code>). Sign in
+to the Dev Spaces website as <code>dev</code>; its terminal receives a separate, limited
+<code>workshop-developer</code> service account for CLI commands.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh"># Inspect the configured provider/model names without printing the injected API key.
+jq . "${PROJECT_SOURCE}/opencode.json"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Expected content:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "$schema": "https://opencode.ai/config.json",
+  "provider": {
+    "deepseek": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "DeepSeek-V4 Pro",
+      "options": {
+        "baseURL": "{env:OPENAI_BASE_URL}",
+        "apiKey": "{env:OPENAI_API_KEY}",
+        "chunkTimeout": 120000,
+        "timeout": 600000
+      },
+      "models": {
+        "deepseekv4pro": {
+          "name": "DeepSeek-V4 Pro",
+          "limit": {
+            "context": 131072,
+            "output": 32768
+          }
+        }
+      }
+    }
+  },
+  "model": "deepseek/deepseekv4pro",
+  "autoupdate": false
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>OpenCode still reads <code>AGENTS.md</code> from the project directory at the start of every session. These instructions guide generation. Tekton validates the image reference, and you check the deployed application in Lab 2.3.</p>
+</div>
+<div class="paragraph">
+<p><code>limit.output</code> is 32 768. Keep prompts specific and review usage and pricing in Lab 3.1.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_checkpoint"><a class="anchor" href="#_checkpoint"></a>✅ Checkpoint</h2>
+<div class="sectionbody">
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><strong>Run inside Dev Spaces</strong>, not in the bastion: open <strong>Terminal → New Terminal</strong> in
+the browser editor and use the project directory (<code>$PROJECT_SOURCE</code>). Sign in
+to the Dev Spaces website as <code>dev</code>; its terminal receives a separate, limited
+<code>workshop-developer</code> service account for CLI commands.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh"># Use the cloned project directory inside Dev Spaces.
+cd ${PROJECT_SOURCE}
+# Verify that OpenCode and the platform Git client are available in this workspace.
+opencode --version &amp;&amp; \
+echo "GIT_SERVER=$GIT_SERVER" &amp;&amp; \
+jq -r .model opencode.json</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Expected Output</div>
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-text hljs" data-lang="text">1.x.x
+GIT_SERVER=https://git.&lt;workshop-domain&gt;
+deepseek/deepseekv4pro</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Your Dev Space is running and the scoped identity and model configuration are ready. Test inference next.</p>
+</div>
+<div class="paragraph">
+<p>Continue to <a href="lab_2_model_apis.html" class="xref page">Lab 2.2 — Test the Model APIs</a>.</p>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="../200-platform/lab_6_card_scout.html" class="query-params-link">Lab 1.8 — Prepare Card Scout</a></span>
+  <span class="next"><a href="lab_2_model_apis.html" class="query-params-link">Lab 2.2 — Test the Model APIs</a></span>
+</nav>
+</article>
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>  </div>
+</main>
+</div>
+<footer class="footer">
+  <a href="https://demo.redhat.com" target="_blank" class="poweredBy"><p>Powered by</p><div class="labInfo_poweredBy" style="display: block; width: 260px;"><svg class="labInfo_poweredByLogo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1508.5 178.739"><g fill="#111"><path d="M316.6 63.2v-56H342a21.279 21.279 0 0 1 7.8 1.3 18.111 18.111 0 0 1 5.9 3.5 15.577 15.577 0 0 1 5 11.8 15.051 15.051 0 0 1-3.1 9.5 16.836 16.836 0 0 1-8.4 5.8l12.5 24.1h-9.3l-11.6-23H325v23Zm24.7-48.6H325v18.7h16.3q5.25 0 8.1-2.7a8.7 8.7 0 0 0 2.8-6.6 8.7 8.7 0 0 0-2.8-6.6c-1.8-1.9-4.5-2.8-8.1-2.8ZM364.1 42.8a20.674 20.674 0 0 1 1.6-8.2 20.288 20.288 0 0 1 4.3-6.7 19.92 19.92 0 0 1 6.5-4.5 19.718 19.718 0 0 1 8-1.6 18.463 18.463 0 0 1 7.8 1.6 18.677 18.677 0 0 1 6.2 4.5 20.927 20.927 0 0 1 4.1 6.8 23.2 23.2 0 0 1 1.5 8.4v2.3H372a13.822 13.822 0 0 0 4.6 8.4 13.6 13.6 0 0 0 9.1 3.3 15.553 15.553 0 0 0 5.7-1 12.858 12.858 0 0 0 4.6-2.6l5.1 5a25.983 25.983 0 0 1-7.4 4.1 24.69 24.69 0 0 1-8.4 1.3 21.306 21.306 0 0 1-8.4-1.6 22.763 22.763 0 0 1-6.8-4.4 20.788 20.788 0 0 1-4.5-6.7 23.2 23.2 0 0 1-1.5-8.4Zm20.2-14.2a11.527 11.527 0 0 0-8 3 13.046 13.046 0 0 0-4.2 7.8h24.2a13.091 13.091 0 0 0-4.2-7.8 11.106 11.106 0 0 0-7.8-3ZM443.1 63.2v-3.8a19.448 19.448 0 0 1-5.8 3.3 18.924 18.924 0 0 1-6.7 1.2 19.824 19.824 0 0 1-14.6-6.1 22.268 22.268 0 0 1-4.4-6.7 21.812 21.812 0 0 1 0-16.4A20.534 20.534 0 0 1 416 28a19.335 19.335 0 0 1 6.6-4.5 20.334 20.334 0 0 1 8.2-1.6 20.7 20.7 0 0 1 6.6 1 19.415 19.415 0 0 1 5.7 3V7.2l8-1.8v57.8Zm-25.2-20.4a13.718 13.718 0 0 0 4 10.1 13.45 13.45 0 0 0 9.8 4.1 14.956 14.956 0 0 0 6.4-1.3 15.954 15.954 0 0 0 4.9-3.6V33.6a14.988 14.988 0 0 0-4.9-3.5 15.271 15.271 0 0 0-6.4-1.3 13.423 13.423 0 0 0-9.9 4 13.806 13.806 0 0 0-3.9 10ZM478.1 63.2v-56h8.4v24h29.8v-24h8.4v56h-8.4V38.8h-29.8v24.4ZM547.2 64a16.483 16.483 0 0 1-10.8-3.5 11.037 11.037 0 0 1-4.2-8.9 10.375 10.375 0 0 1 4.7-9.2 20.76 20.76 0 0 1 11.8-3.2 27.841 27.841 0 0 1 5.8.6 27.374 27.374 0 0 1 5.3 1.6v-4.3a8.143 8.143 0 0 0-2.6-6.5 11.452 11.452 0 0 0-7.4-2.2 20.788 20.788 0 0 0-6 .9 34.616 34.616 0 0 0-6.6 2.6l-3-6a54.169 54.169 0 0 1 8.4-3.1 33.18 33.18 0 0 1 8.3-1.1c5.2 0 9.3 1.3 12.2 3.8s4.4 6.1 4.4 10.8v27h-7.8v-3.5a19.441 19.441 0 0 1-5.8 3.2 23.54 23.54 0 0 1-6.7 1Zm-7.3-12.6a5.646 5.646 0 0 0 2.6 4.8 11.193 11.193 0 0 0 6.6 1.8 16.256 16.256 0 0 0 5.9-1 14.449 14.449 0 0 0 4.9-2.9V47a19.778 19.778 0 0 0-4.8-1.8 24.933 24.933 0 0 0-5.7-.6 11.859 11.859 0 0 0-6.8 1.8 5.728 5.728 0 0 0-2.7 5ZM580.6 53.2v-24H572v-6.7h8.6V12.1l7.9-1.9v12.3h12v6.7h-12v22.1a5.94 5.94 0 0 0 1.4 4.4c.9.9 2.5 1.3 4.6 1.3a23.637 23.637 0 0 0 3-.2 10.857 10.857 0 0 0 2.8-.8v6.7a19.28 19.28 0 0 1-3.8.9 27.484 27.484 0 0 1-3.8.3c-3.9 0-7-.9-9-2.8-2-1.7-3.1-4.4-3.1-7.9Z"></path></g><path d="M127 90.2c12.5 0 30.6-2.6 30.6-17.5a12.678 12.678 0 0 0-.3-3.4L149.8 37c-1.7-7.1-3.2-10.3-15.7-16.6-9.7-5-30.8-13.1-37.1-13.1-5.8 0-7.5 7.5-14.4 7.5-6.7 0-11.6-5.6-17.9-5.6-6 0-9.9 4.1-12.9 12.5 0 0-8.4 23.7-9.5 27.2a4.216 4.216 0 0 0-.3 1.9c0 9.2 36.3 39.4 85 39.4Zm32.5-11.4c1.7 8.2 1.7 9.1 1.7 10.1 0 14-15.7 21.8-36.4 21.8-46.8 0-87.7-27.4-87.7-45.5a17.535 17.535 0 0 1 1.5-7.3C21.8 58.8 0 61.8 0 81c0 31.5 74.6 70.3 133.7 70.3 45.3 0 56.7-20.5 56.7-36.6-.1-12.8-11-27.3-30.9-35.9Z" fill="#e00"></path><path d="M159.5 78.8c1.7 8.2 1.7 9.1 1.7 10.1 0 14-15.7 21.8-36.4 21.8-46.8 0-87.7-27.4-87.7-45.5a17.535 17.535 0 0 1 1.5-7.3l3.7-9.1a4.877 4.877 0 0 0-.3 2c0 9.2 36.3 39.4 85 39.4 12.5 0 30.6-2.6 30.6-17.5a12.678 12.678 0 0 0-.3-3.4Z"></path><path d="M253.5 158.7a2.22 2.22 0 0 1-2.2-2.2V2.2a2.2 2.2 0 0 1 4.4 0v154.2a2.242 2.242 0 0 1-2.2 2.3Z" fill="#111"></path><text data-name="Demo Platform" transform="translate(1186 149)" fill="#111" font-size="82" font-family="'RedHatDisplay', 'Overpass', overpass, helvetica, arial, sans-serif" font-weight="700"><tspan x="-877.892" y="0">Demo Platform</tspan></text></svg></div></div>
+</footer>
+<script src="../../_/js/vendor/clipboard.js"></script>
+<script src="../../_/js/site.js"></script>
+<script async src="../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>
