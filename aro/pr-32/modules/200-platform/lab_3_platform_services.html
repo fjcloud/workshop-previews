@@ -146,7 +146,7 @@
 <td class="content">
 <div class="paragraph">
 <p><strong>Review preview — PR 32, not the published workshop.</strong>
-This page comes from commit <code>ebcde0ef63f873d183a56da9f1e63c22ea373e71</code> on branch <code>docs/aro-guided-workshop-pr-preview</code>.
+This page comes from commit <code>1e0013a7541bd0e383bc58b6a9cd248a27df5f52</code> on branch <code>docs/aro-guided-workshop-pr-preview</code>.
 Read the changes and leave feedback in
 <a href="https://github.com/fjcloud/aro-ai-app-platform/pull/32">the pull request</a>.
 The production workshop on <code>main</code> is unchanged. The clone command in Act 0
@@ -159,14 +159,13 @@ uses this review branch so its proposed manifests can be reviewed together.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_what_you_will_do_and_why"><a class="anchor" href="#_what_you_will_do_and_why"></a>What you will do and why</h2>
+<h2 id="_goal"><a class="anchor" href="#_goal"></a>Goal</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p><strong>Goal: Turn installed operators into usable services.</strong>
-A platform service is a running capability that applications and developers consume. You will create the browser IDE, OpenShift AI model-serving components, the Models-as-a-Service (MaaS) gateway and trace storage. MaaS puts one governed API in front of models: callers use a client API key and token allowance rather than the cloud provider’s account key. These services are shared prerequisites for the developer, not code that the developer must rebuild in every app.</p>
+<p>Turn the installed operators into a working browser IDE, model-serving platform, gateway and trace store. Models-as-a-Service (MaaS) gives developers a common model API with client keys, token allowances and usage tracking.</p>
 </div>
 <div class="paragraph">
-<p><strong>Platform Engineer · bastion terminal.</strong> Operators reconcile instances; installing a subscription alone does not create an IDE or model platform. Enable the services now that the additional workers are ready. These are direct CLI calls against the supplied manifests.</p>
+<p>Start after the additional workers from Lab 1.2 are Ready.</p>
 </div>
 </div>
 </div>
@@ -230,9 +229,7 @@ This is created once here; the <code>dev</code> user will not recreate it in Dev
 </td>
 <td class="content">
 <div class="paragraph">
-<p><strong>Run in the bastion terminal</strong>: the existing browser terminal beside this guide in
-Cloud Terminal. Use the workshop checkout (<code>~/aro-ai-app-platform</code>). Stay signed
-in as <code>workshop-admin</code> for the platform labs; Act 0 explains the initial login.</p>
+<p><strong>Terminal: cluster</strong> — the shell beside this guide.</p>
 </div>
 </td>
 </tr>
@@ -244,22 +241,25 @@ in as <code>workshop-admin</code> for the platform labs; Act 0 explains the init
 bash deploy/instances/configure-maas-database.sh
 # Start the persistent database required by MaaS key storage.
 oc apply -f deploy/instances/maas-postgres.yaml
-# Wait for the named deployment’s new pods to become available within the displayed timeout.
+# Wait for the deployment to become available.
 oc rollout status deployment/postgres -n redhat-ai-gateway-infra --timeout=300s
 # Create the configured platform instances; their operators reconcile the running services.
 oc apply -k deploy/instances</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>This creates Dev Spaces, OpenShift AI/KServe, MaaS, NFD and the NVIDIA ClusterPolicy. The OpenShift AI instance also enables MLflow, Gen AI studio and TrustyAI. PostgreSQL keeps MaaS keys on a 1 GiB persistent volume. The small helper generates or reuses credentials without printing them. This setup targets a fresh lab; it does not migrate an existing ephemeral database.</p>
+<p>This creates Dev Spaces, OpenShift AI/KServe, MaaS, NFD and the NVIDIA ClusterPolicy. The OpenShift AI instance also enables MLflow, Gen AI studio and TrustyAI. PostgreSQL keeps MaaS keys on a 1 GiB persistent volume. The credential helper reuses existing credentials when rerun.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_bind_the_maas_gateway_to_this_cluster"><a class="anchor" href="#_bind_the_maas_gateway_to_this_cluster"></a>Bind the MaaS gateway to this cluster</h2>
+<h2 id="_configure_maas_https"><a class="anchor" href="#_configure_maas_https"></a>Configure MaaS HTTPS</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Read the actual apps domain and ingress certificate; there are no cluster IDs to replace.</p>
+<p>Bind the gateway to this cluster&#8217;s application domain and ingress certificate.
+Then configure Authorino, the gateway&#8217;s authentication service, to use and trust
+OpenShift service certificates. These two helpers handle the cluster-specific
+TLS configuration; the service manifests remain in <code>deploy/instances</code>.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -269,9 +269,7 @@ oc apply -k deploy/instances</code></pre>
 </td>
 <td class="content">
 <div class="paragraph">
-<p><strong>Run in the bastion terminal</strong>: the existing browser terminal beside this guide in
-Cloud Terminal. Use the workshop checkout (<code>~/aro-ai-app-platform</code>). Stay signed
-in as <code>workshop-admin</code> for the platform labs; Act 0 explains the initial login.</p>
+<p><strong>Terminal: cluster</strong> — the shell beside this guide.</p>
 </div>
 </td>
 </tr>
@@ -279,101 +277,11 @@ in as <code>workshop-admin</code> for the platform labs; Act 0 explains the init
 </div>
 <div class="listingblock execute">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh"># Read the cluster’s actual application domain, rather than copying another lab’s URL.
-APPS_DOMAIN=$(oc get ingress.config.openshift.io cluster -o jsonpath='{.spec.domain}')
-# Build the public MaaS hostname under that application domain.
-MAAS_HOST="maas.${APPS_DOMAIN}"
-# Read the configured ingress TLS Secret, or use the router’s default when none is named.
-INGRESS_CERT=$(oc get ingresscontroller default -n openshift-ingress-operator \
-  -o jsonpath='{.spec.defaultCertificate.name}')
-# Read the configured ingress TLS Secret, or use the router’s default when none is named.
-INGRESS_CERT=${INGRESS_CERT:-router-certs-default}
-# Confirm the named Secret exists; this command does not decode or print its credentials.
-oc get secret "$INGRESS_CERT" -n openshift-ingress
-
-# Build a JSON patch using this cluster’s host and certificate names.
-GATEWAY_PATCH=$(jq -cn --arg host "$MAAS_HOST" --arg cert "$INGRESS_CERT" '[
-  {op:"replace",path:"/spec/listeners/0/hostname",value:$host},
-  {op:"replace",path:"/spec/listeners/0/tls/certificateRefs/0/name",value:$cert}
-]')
-# Bind the MaaS HTTPS listener to this cluster’s host and ingress certificate.
-oc patch gateway maas-default-gateway -n openshift-ingress --type=json -p "$GATEWAY_PATCH"
-# Expose the HTTPS gateway through a TLS-passthrough OpenShift Route.
-oc create route passthrough maas-gateway -n openshift-ingress \
-  --service=maas-default-gateway-openshift-default --hostname="$MAAS_HOST" \
-  --port=https --insecure-policy=Redirect --dry-run=client -o yaml | oc apply -f -</code></pre>
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh"># Set the MaaS hostname, certificate and HTTPS Route for this cluster.
+bash deploy/instances/configure-maas-gateway.sh
+# Enable Authorino TLS and trust for internal HTTPS callbacks.
+AUTHORINO_WAIT_SECONDS=600 bash deploy/instances/configure-authorino-trust.sh</code></pre>
 </div>
-</div>
-<div class="paragraph">
-<p>The passthrough Route sends ARO wildcard DNS traffic to the HTTPS gateway. The provider model is not deployed yet.</p>
-</div>
-<div class="paragraph">
-<p>The patch sets the listener hostname and the certificate reference from the
-values just read. <code>passthrough</code> forwards TLS to the gateway; <code>Redirect</code> upgrades
-plain HTTP. This is gateway access for the external DeepSeek model; it does not
-make the local D3 endpoint public.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_trust_the_cluster_service_ca"><a class="anchor" href="#_trust_the_cluster_service_ca"></a>Trust the cluster service CA</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Authorino authenticates MaaS requests and calls internal HTTPS services. Enable the service-CA-signed Authorino listener and trust the service CA for its outbound callbacks. The JSON patch preserves any existing volumes.</p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p><strong>Run in the bastion terminal</strong>: the existing browser terminal beside this guide in
-Cloud Terminal. Use the workshop checkout (<code>~/aro-ai-app-platform</code>). Stay signed
-in as <code>workshop-admin</code> for the platform labs; Act 0 explains the initial login.</p>
-</div>
-</td>
-</tr>
-</table>
-</div>
-<div class="listingblock execute">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh"># Wait for the authentication service deployment to exist before configuring it.
-oc wait --for=create deployment/authorino -n kuadrant-system --timeout=600s
-# Record the serving-certificate or bootstrap setting used by the gateway authentication
-# service.
-oc annotate service authorino-authorino-authorization -n kuadrant-system \
-  service.beta.openshift.io/serving-cert-secret-name=authorino-server-cert --overwrite
-# Configure Authorino’s TLS or service-CA trust for internal HTTPS callbacks.
-oc patch authorino authorino -n kuadrant-system --type=merge \
-  -p '{"spec":{"listener":{"tls":{"enabled":true,"certSecretRef":{"name":"authorino-server-cert"}}}}}'
-# Record the serving-certificate or bootstrap setting used by the gateway authentication
-# service.
-oc annotate gateway maas-default-gateway -n openshift-ingress \
-  security.opendatahub.io/authorino-tls-bootstrap=true --overwrite
-# Build a CA-volume patch that preserves any existing Authorino volumes.
-oc get authorino authorino -n kuadrant-system -o json | jq '{spec:{volumes:
-  ((.spec.volumes // {}) | .items =
-    ((.items // [] | map(select(.name != "workshop-service-ca"))) + [{
-      name:"workshop-service-ca",mountPath:"/etc/ssl/certs/openshift-service-ca",
-      configMaps:["openshift-service-ca.crt"],
-      items:[{key:"service-ca.crt",path:"service-ca-bundle.crt"}]
-    }]))
-}}' &gt; state/authorino-service-ca.json
-# Configure Authorino’s TLS or service-CA trust for internal HTTPS callbacks.
-oc patch authorino authorino -n kuadrant-system --type=merge \
-  --patch-file=state/authorino-service-ca.json
-# Make Authorino trust the mounted cluster service CA on outbound TLS requests.
-oc set env deployment/authorino -n kuadrant-system \
-  SSL_CERT_FILE=/etc/ssl/certs/openshift-service-ca/service-ca-bundle.crt \
-  REQUESTS_CA_BUNDLE=/etc/ssl/certs/openshift-service-ca/service-ca-bundle.crt
-# Wait for the named deployment’s new pods to become available within the displayed timeout.
-oc rollout status deployment/authorino -n kuadrant-system --timeout=180s</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Gateway API CRDs were prepared in Lab 1.1. Kuadrant can reconcile its filters without recycling its controller.</p>
 </div>
 <div class="admonitionblock important">
 <table>
@@ -406,9 +314,7 @@ not success: inspect the named resource and its pod events before continuing.</p
 </td>
 <td class="content">
 <div class="paragraph">
-<p><strong>Run in the bastion terminal</strong>: the existing browser terminal beside this guide in
-Cloud Terminal. Use the workshop checkout (<code>~/aro-ai-app-platform</code>). Stay signed
-in as <code>workshop-admin</code> for the platform labs; Act 0 explains the initial login.</p>
+<p><strong>Terminal: cluster</strong> — the shell beside this guide.</p>
 </div>
 </td>
 </tr>
@@ -445,7 +351,7 @@ oc apply -k deploy/observability
 oc set env deployment/authorino -n kuadrant-system \
   SSL_CERT_FILE=/etc/ssl/certs/openshift-service-ca/service-ca-bundle.crt \
   REQUESTS_CA_BUNDLE=/etc/ssl/certs/openshift-service-ca/service-ca-bundle.crt
-# Wait for the named deployment’s new pods to become available within the displayed timeout.
+# Wait for the deployment to become available.
 oc rollout status deployment/authorino -n kuadrant-system --timeout=180s
 # Wait until the HTTPS gateway has been programmed.
 oc wait gateway/maas-default-gateway -n openshift-ingress --for=condition=Programmed --timeout=600s
@@ -482,9 +388,7 @@ initialization or storage setup.</p>
 </td>
 <td class="content">
 <div class="paragraph">
-<p><strong>Run in the bastion terminal</strong>: the existing browser terminal beside this guide in
-Cloud Terminal. Use the workshop checkout (<code>~/aro-ai-app-platform</code>). Stay signed
-in as <code>workshop-admin</code> for the platform labs; Act 0 explains the initial login.</p>
+<p><strong>Terminal: cluster</strong> — the shell beside this guide.</p>
 </div>
 </td>
 </tr>
@@ -506,7 +410,7 @@ oc patch checluster devspaces -n openshift-operators --type=merge -p \
     '{spec:{components:{imagePuller:{enable:true,spec:{images:$images,cachingCPURequest:"10m"}}}}}')"
 # Wait for the prerequisite object to exist before configuring or using it.
 oc wait --for=create daemonset/kubernetes-image-puller -n openshift-operators --timeout=180s
-# Inspect the named resource and its reported status before proceeding.
+# Inspect daemonset status.
 oc get daemonset kubernetes-image-puller -n openshift-operators</code></pre>
 </div>
 </div>
@@ -527,7 +431,7 @@ The initial DaemonSet <code>READY</code> count may be <code>0</code>. Leave it r
 </table>
 </div>
 <div class="paragraph">
-<p>The first download still takes time; it happens before the developer starts. The GPU taint keeps this cache on CPU workers. Leave it running and continue with Foundry.</p>
+<p>Leave the cache running on CPU workers while you prepare the models.</p>
 </div>
 </div>
 </div>
@@ -545,9 +449,7 @@ The initial DaemonSet <code>READY</code> count may be <code>0</code>. Leave it r
 </td>
 <td class="content">
 <div class="paragraph">
-<p><strong>Run in the bastion terminal</strong>: the existing browser terminal beside this guide in
-Cloud Terminal. Use the workshop checkout (<code>~/aro-ai-app-platform</code>). Stay signed
-in as <code>workshop-admin</code> for the platform labs; Act 0 explains the initial login.</p>
+<p><strong>Terminal: cluster</strong> — the shell beside this guide.</p>
 </div>
 </td>
 </tr>
@@ -584,12 +486,12 @@ expected yet; Labs 1.4–1.6 create and publish those models.</p>
 </div>
 <div class="imageblock text-center">
 <div class="content">
-<a class="image" href="../_images/card-scout-dashboard-tokens.png"><img src="../_images/card-scout-dashboard-tokens.png" alt="OpenShift console layout with the application launcher at the top right"></a>
+<a class="image" href="../_images/workshop-openshift-ai-home.png"><img src="../_images/workshop-openshift-ai-home.png" alt="OpenShift AI home and navigation"></a>
 </div>
-<div class="title">Figure 1. Example OpenShift console from a completed lab: the nine-dot application launcher is in the top-right header. Metrics appear later in the workshop.</div>
+<div class="title">Figure 1. OpenShift AI home, signed in as workshop-admin. The sidebar contains AI hub, Gen AI studio and MaaS governance.</div>
 </div>
 <div class="paragraph">
-<p>If a navigation item is missing, stay in the bastion: check DSC readiness and the
+<p>If a navigation item is missing, stay in the cluster terminal: check DSC readiness and the
 <code>odh-dashboard-config</code> patch above. Do not install a second OpenShift AI instance.
 The documented <a href="https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/installing_and_uninstalling_openshift_ai_self-managed/accessing-the-dashboard_install">dashboard access procedure</a>
 uses the same application launcher and OpenShift credentials.</p>

@@ -146,7 +146,7 @@
 <td class="content">
 <div class="paragraph">
 <p><strong>Review preview — PR 32, not the published workshop.</strong>
-This page comes from commit <code>ebcde0ef63f873d183a56da9f1e63c22ea373e71</code> on branch <code>docs/aro-guided-workshop-pr-preview</code>.
+This page comes from commit <code>1e0013a7541bd0e383bc58b6a9cd248a27df5f52</code> on branch <code>docs/aro-guided-workshop-pr-preview</code>.
 Read the changes and leave feedback in
 <a href="https://github.com/fjcloud/aro-ai-app-platform/pull/32">the pull request</a>.
 The production workshop on <code>main</code> is unchanged. The clone command in Act 0
@@ -159,14 +159,10 @@ uses this review branch so its proposed manifests can be reviewed together.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_what_you_will_do_and_why"><a class="anchor" href="#_what_you_will_do_and_why"></a>What you will do and why</h2>
+<h2 id="_goal"><a class="anchor" href="#_goal"></a>Goal</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p><strong>Goal: Add the focused image-decision capability.</strong>
-DeepSeek is the language model; D3 is a smaller multimodal model used for a narrow decision task. It evaluates an image against explicit candidate choices and returns probabilities. Here those choices describe the card type and the printed rarity symbol. Keeping this focused task on the local T4 separates visual decisions from language generation and lets you observe their latency and GPU cost independently. It complements DeepSeek rather than replacing it.</p>
-</div>
-<div class="paragraph">
-<p>DeepSeek handles language and tool use through MaaS. <strong>d3-mini</strong> runs on one T4 and classifies card images and their printed rarity. The developer will compare it with the language model using curl + jq in Lab 2.2.</p>
+<p>Serve a focused image-decision model on the local T4. Unlike DeepSeek, D3 selects among supplied choices and returns probabilities: here it identifies Pokémon cards and their printed rarity symbols.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -186,9 +182,6 @@ DeepSeek is the language model; D3 is a smaller multimodal model used for a narr
 </div>
 <div class="paragraph">
 <p>d3-mini is a 4.54B-parameter community decision model from <a href="https://huggingface.co/vllm-sr/d3-mini">vLLM Semantic Router</a>, Apache-2.0 licensed. It returns choices or ordinal scores without generating a paragraph. OpenShift AI/KServe manages its native runtime. DeepSeek remains the managed language model.</p>
-</div>
-<div class="paragraph">
-<p>Red Hat <a href="https://www.redhat.com/en/about/press-releases/red-hat-completes-acquisition-neural-magic-fuel-optimized-generative-ai-innovation-across-hybrid-cloud">acquired Neural Magic</a>, a leading contributor to vLLM, in January 2025.</p>
 </div>
 <div class="paragraph">
 <p>The published runtime is built from the <strong>Red Hat AI Inference Server</strong> image <code>registry.redhat.io/rhaii/vllm-cuda-rhel9:3.5.0</code>, pinned by digest in <code>deploy/decision/runtime/Dockerfile</code>. It adds the pinned vLLM Semantic Router decision engine. The resulting image is built before the workshop and pinned by digest in <code>servingruntime.yaml</code>.</p>
@@ -220,9 +213,7 @@ DeepSeek is the language model; D3 is a smaller multimodal model used for a narr
 </td>
 <td class="content">
 <div class="paragraph">
-<p><strong>Run in the bastion terminal</strong>: the existing browser terminal beside this guide in
-Cloud Terminal. Use the workshop checkout (<code>~/aro-ai-app-platform</code>). Stay signed
-in as <code>workshop-admin</code> for the platform labs; Act 0 explains the initial login.</p>
+<p><strong>Terminal: cluster</strong> — the shell beside this guide.</p>
 </div>
 </td>
 </tr>
@@ -275,9 +266,7 @@ node events first; creating a model pod cannot repair an unavailable GPU.</p>
 </td>
 <td class="content">
 <div class="paragraph">
-<p><strong>Run in the bastion terminal</strong>: the existing browser terminal beside this guide in
-Cloud Terminal. Use the workshop checkout (<code>~/aro-ai-app-platform</code>). Stay signed
-in as <code>workshop-admin</code> for the platform labs; Act 0 explains the initial login.</p>
+<p><strong>Terminal: cluster</strong> — the shell beside this guide.</p>
 </div>
 </td>
 </tr>
@@ -295,10 +284,9 @@ cat deploy/decision/inferenceservice.yaml
 oc apply -k deploy/decision
 # Wait for the model runtime to load its weights and serve requests.
 oc wait inferenceservice/d3-mini -n decision-serving --for=condition=Ready --timeout=1800s
-# Verify the required app identity/storage resources and their state.
+# Check the created resources and their status.
 oc get inferenceservice,servingruntime,pvc -n decision-serving
-# Inspect pod readiness; for an app digest check, compare the running image with the build
-# result.
+# Inspect the model pods and their readiness.
 oc get pods -n decision-serving</code></pre>
 </div>
 </div>
@@ -331,9 +319,6 @@ reason to add another GPU or continue to the developer labs.</p>
 <pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">http://d3-mini.decision-serving.svc.cluster.local:8080/v1/systemone</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>A Ready GPU node does not establish model readiness. Wait for <code>InferenceService/Ready</code> before handing the endpoint to the developer. If Azure reports a failed VM, inspect <code>oc describe machine</code> and Machine API events; OpenShift may replace an unhealthy new machine automatically. Do not continue after the readiness timeout or add a second T4 to hide a provisioning error.</p>
-</div>
 </div>
 </div>
 <div class="sect1">
@@ -342,13 +327,8 @@ reason to add another GPU or continue to the developer labs.</p>
 <div class="paragraph">
 <p>Developers and the prepared Card Scout service call the same internal model directly. d3-mini requires no API key or authentication proxy in this workshop. Its NetworkPolicy allows the Card Scout platform service, Dev Spaces and monitoring namespaces; no public Route is created.</p>
 </div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">http://d3-mini.decision-serving.svc.cluster.local:8080/v1/systemone</code></pre>
-</div>
-</div>
 <div class="paragraph">
-<p>The model is visible as <code>d3-mini</code> under project <code>decision-serving</code> in OpenShift AI. Wait for Ready; a provisioned GPU alone does not prove model readiness. The developer tests both APIs in Lab 2.2 before coding.</p>
+<p>The developer tests this endpoint in Lab 2.2 before coding.</p>
 </div>
 </div>
 </div>

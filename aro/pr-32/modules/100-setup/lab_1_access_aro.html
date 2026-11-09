@@ -146,7 +146,7 @@
 <td class="content">
 <div class="paragraph">
 <p><strong>Review preview — PR 32, not the published workshop.</strong>
-This page comes from commit <code>ebcde0ef63f873d183a56da9f1e63c22ea373e71</code> on branch <code>docs/aro-guided-workshop-pr-preview</code>.
+This page comes from commit <code>1e0013a7541bd0e383bc58b6a9cd248a27df5f52</code> on branch <code>docs/aro-guided-workshop-pr-preview</code>.
 Read the changes and leave feedback in
 <a href="https://github.com/fjcloud/aro-ai-app-platform/pull/32">the pull request</a>.
 The production workshop on <code>main</code> is unchanged. The clone command in Act 0
@@ -157,7 +157,9 @@ uses this review branch so its proposed manifests can be reviewed together.</p>
 </table>
 </div>
 <div class="paragraph">
-<p>Your assigned RHDP environment already contains an ARO cluster and a bastion with a WeTTY browser terminal. This lab connects to that cluster; it does not deploy another one.</p>
+<p>Connect to your assigned ARO cluster and create two accounts: <code>workshop-admin</code>
+to prepare the platform, and <code>dev</code> to use it. You will reuse these accounts in
+the console, OpenShift AI and Dev Spaces.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -167,9 +169,9 @@ uses this review branch so its proposed manifests can be reviewed together.</p>
 </td>
 <td class="content">
 <div class="paragraph">
-<p><strong>Estimated time:</strong> 10 minutes<br>
-<strong>Persona:</strong> Platform Engineer<br>
-<strong>Blocking:</strong> Act 1 requires a classic ARO cluster on OpenShift 4.21 or later, Ready workers, cluster-admin access, and Azure permissions for Foundry and the extra GPU/CPU workers. Check T4 quota and regional capacity with the facilitator before Act 1.</p>
+<p><strong>Time:</strong> about 10 minutes.<br>
+<strong>Needs:</strong> an assigned ARO cluster on OpenShift 4.21 or later, its administrator
+credentials, and Azure permissions for the workshop resources.</p>
 </div>
 </td>
 </tr>
@@ -178,204 +180,111 @@ uses this review branch so its proposed manifests can be reviewed together.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_open_your_environment"><a class="anchor" href="#_open_your_environment"></a>Open your environment</h2>
+<h2 id="_1_open_the_cluster_terminal"><a class="anchor" href="#_1_open_the_cluster_terminal"></a>1. Open the cluster terminal</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Your facilitator provides an assigned environment, its access details, and the
-<strong>workshop ID, email, and workshop password</strong>. Environment ordering and assignment
-are handled by the facilitator.</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Open <a href="https://fjcloud.github.io/cloud-terminal-pages/?workshop=aro-ai-app-platform">Cloud Terminal for ARO</a>, or the participant link supplied by your facilitator.</p>
-</li>
-<li>
-<p>Enter the workshop ID, assigned email and workshop password, then click
-<strong>Open workshop</strong>. The launcher retrieves your assigned terminal automatically.</p>
-</li>
-</ol>
+<p>Open <a href="https://fjcloud.github.io/cloud-terminal-pages/?workshop=aro-ai-app-platform">Cloud Terminal for ARO</a>,
+or the link from your facilitator. Enter your <strong>workshop ID, assigned email and
+workshop password</strong>, then click <strong>Open workshop</strong>.</p>
 </div>
 <div class="paragraph">
-<p>The guide opens beside the existing WeTTY terminal. If the terminal stays blank
-or asks for a login, use <strong>Open in new tab</strong> and the access details supplied by your
-facilitator. Closing the page does not extend the environment&#8217;s lifetime.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_know_which_terminal_you_are_using"><a class="anchor" href="#_know_which_terminal_you_are_using"></a>Know which terminal you are using</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The <strong>bastion</strong> is an existing management VM supplied with your environment. Its
-<strong>WeTTY terminal</strong> is the browser shell beside this guide in Cloud Terminal.
-It already contains <code>az</code>, <code>oc</code>, Git and the assigned Azure login. We do not create
-another bastion. Use this terminal for Acts 0 and 1.</p>
-</div>
-<div class="paragraph">
-<p>In Act 2 you will switch to a different terminal, inside the Dev Spaces browser
-editor. Its identity and permissions are intentionally more limited. Do not run
-platform installation commands there.</p>
-</div>
-<div class="paragraph">
-<p><strong>What you will do:</strong> connect to the supplied cluster and create two named logins.
-<strong>Why:</strong> separate platform administration from the developer experience before
-installing anything. The resulting accounts are reused throughout the workshop.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_check_azure_access"><a class="anchor" href="#_check_azure_access"></a>Check Azure access</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The bastion is already configured for the assigned environment.</p>
+<p>The browser shell beside this guide is the <strong>cluster terminal</strong>. Use it for
+Acts 0 and 1. It contains <code>oc</code>, <code>az</code>, Git and the assigned Azure login.
+Act 2 uses the terminal inside Dev Spaces instead.</p>
 </div>
 <div class="listingblock execute">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh"># Confirm the bastion’s assigned Azure subscription and identity before creating resources.
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh"># Check the administrator session supplied with the lab.
+oc whoami
+# Check that the existing cluster's nodes are Ready.
+oc get nodes
+# Check the assigned Azure subscription.
 az account show --query '{subscription:id, identity:user.name}' --output table</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>If <code>oc whoami</code> reports that you are not logged in, run <code>oc login -u kubeadmin</code>
+and enter the cluster administrator password supplied with your environment.
+This initial account is used only to create the named accounts below.</p>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_clone_and_connect"><a class="anchor" href="#_clone_and_connect"></a>Clone and connect</h2>
-<div class="sectionbody">
 <div class="listingblock execute">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh"># Use the home directory before cloning the workshop.
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh"># Clone the workshop manifests and setup tools.
 cd "$HOME"
-# Clone the workshop repository and its prepared manifests.
 git clone --branch docs/aro-guided-workshop-pr-preview https://github.com/fjcloud/aro-ai-app-platform.git
-# Use the workshop checkout for all relative manifest paths.
-cd aro-ai-app-platform
-# Discover the assigned ARO resource, log in and validate the existing cluster.
-make onboard
-# Show the CLI identity actually used by this terminal.
-oc whoami</code></pre>
+cd aro-ai-app-platform</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p><code>make onboard</code> finds the existing ARO resource, retrieves its administrator credentials from Azure and runs <code>oc login</code> automatically. It checks permissions, OpenShift version and worker readiness, then saves the resource group and subscription in <code>state/workshop.env</code>. Credentials are neither printed nor saved in this file. Keep this directory for later commands.</p>
-</div>
-<div class="paragraph">
-<p>Load the detected values; there is no resource group name or ID to type:</p>
-</div>
-<div class="listingblock execute">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh"># Load the subscription, resource group and cluster ID detected in Act 0.
-source state/workshop.env
-# Verify access to the detected lab resource group; do not type another group ID.
-az group show --name "$RESOURCEGROUP" --subscription "$SUBSCRIPTION" --query '{name:name,id:id,location:location}' -o table</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>This is the group containing the ARO resource, where the workshop creates Foundry resources. It is distinct from the managed group containing ARO’s machines. Detection stops if the Azure subscription is wrong, the cluster cannot be matched uniquely, or read access is missing. Do not continue after an error. The Azure identity also needs permission to create Foundry resources in this group.</p>
+<p>Keep this directory open for the platform labs.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_create_the_administrator_and_developer_logins"><a class="anchor" href="#_create_the_administrator_and_developer_logins"></a>Create the administrator and developer logins</h2>
+<h2 id="_2_create_workshop_admin_and_dev"><a class="anchor" href="#_2_create_workshop_admin_and_dev"></a>2. Create workshop-admin and dev</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>OpenShift&#8217;s OAuth server can authenticate users against an <strong>HTPasswd identity
-provider</strong>: a file of usernames and password hashes, stored in a Kubernetes Secret.
-We use it for two workshop personas; this is a lab identity setup rather than an
-enterprise identity service.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 20%;">
-<col style="width: 40%;">
-<col style="width: 40%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Login</th>
-<th class="tableblock halign-left valign-top">Job</th>
-<th class="tableblock halign-left valign-top">Password</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>workshop-admin</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Prepare operators, services, models and developer access.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Choose it below; keep it for the console and OpenShift AI.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>dev</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Use the prepared projects and Dev Spaces in Act 2. No cluster-admin grant.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Choose a different password below; keep it for the developer browser session.</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>The initial <code>kubeadmin</code> session established by <code>make onboard</code> bootstraps these
-accounts. Creating a password does not grant permissions: we grant administration
-only to <code>workshop-admin</code> here and prepare `dev&#8217;s project access in Lab 1.7.</p>
-</div>
-<div class="sect2">
-<h3 id="_build_the_password_file"><a class="anchor" href="#_build_the_password_file"></a>Build the password file</h3>
-<div class="paragraph">
-<p><strong>Run in the bastion terminal.</strong> Keep shell tracing off and enter passwords only
-at the hidden prompts. <code>htpasswd -iB</code> reads the password from standard input and
-stores a bcrypt hash; the plaintext is not written into the file.</p>
+<p>HTPasswd is an OpenShift login provider backed by a file of password hashes.
+Create both users in the same file. Each <code>htpasswd</code> command asks for a new
+password twice; choose and keep a password for each account. If an account
+already exists, enter its current password to keep the same login.</p>
 </div>
 <div class="listingblock execute">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh"># Restrict newly created state files to your user; state/ is excluded from Git.
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh"># Keep the local password file private.
 umask 077
-# Keep the local password file alongside the other temporary workshop state.
 mkdir -p state
-# Preserve existing workshop entries when rerunning; a missing Secret gives an empty file.
+# Preserve any users already configured in the workshop password Secret.
 oc get secret workshop-htpasswd -n openshift-config --ignore-not-found \
-  -o jsonpath='{.data.htpasswd}' 2&gt;/dev/null | base64 -d &gt; state/workshop.htpasswd
-# Read the administrator password without showing it on screen.
-read -rsp 'Choose the workshop-admin password: ' WORKSHOP_PASSWORD; echo
-# Add or update only workshop-admin in the file, using a bcrypt hash.
-printf '%s\n' "$WORKSHOP_PASSWORD" | htpasswd -iB state/workshop.htpasswd workshop-admin
-# Remove the plaintext value from the shell variable.
-unset WORKSHOP_PASSWORD</code></pre>
+  -o jsonpath='{.data.htpasswd}' | base64 -d &gt; state/workshop.htpasswd</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Now add the developer to the <strong>same file</strong>. Do not use <code>htpasswd -c</code>, which would
-replace the file and remove the administrator you just added.</p>
+<p>Create the administrator. Enter its password at <strong>New password</strong>, then repeat it
+at <strong>Re-type new password</strong>:</p>
 </div>
 <div class="listingblock execute">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh"># Choose the separate developer password without echoing it.
-read -rsp 'Choose the dev password: ' DEV_PASSWORD; echo
-# Append or update dev while keeping workshop-admin's existing hash.
-printf '%s\n' "$DEV_PASSWORD" | htpasswd -iB state/workshop.htpasswd dev
-# Remove the plaintext developer password from the shell.
-unset DEV_PASSWORD</code></pre>
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh"># Add the platform administrator to the password file.
+htpasswd -B state/workshop.htpasswd workshop-admin</code></pre>
 </div>
 </div>
-</div>
-<div class="sect2">
-<h3 id="_tell_openshift_to_use_the_file"><a class="anchor" href="#_tell_openshift_to_use_the_file"></a>Tell OpenShift to use the file</h3>
 <div class="paragraph">
-<p>The Secret contains both hashes. The OAuth patch adds the provider named
-<strong>workshop</strong> while retaining other identity providers already configured on the lab.</p>
+<p>Then create the developer, answering the same two prompts with its password:</p>
 </div>
 <div class="listingblock execute">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh"># Create or update the Secret consumed by the HTPasswd provider.
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh"># Add the developer while retaining workshop-admin in the same file.
+htpasswd -B state/workshop.htpasswd dev</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Publish this file as a Secret, register the <strong>workshop</strong> login provider and give
+administration rights to <code>workshop-admin</code>. Project access for <code>dev</code> is prepared
+in Lab 1.7.</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh"># Store both password hashes for the OpenShift login provider.
 oc create secret generic workshop-htpasswd -n openshift-config \
   --from-file=htpasswd=state/workshop.htpasswd --dry-run=client -o yaml | oc apply -f -
-# Build a patch that replaces only our provider entry, keeping all other providers.
+# Define the workshop provider while preserving other configured providers.
 oc get oauth cluster -o json | jq '{spec:{identityProviders:
   ((.spec.identityProviders // [] | map(select(.name != "workshop"))) + [{
     name:"workshop",mappingMethod:"claim",type:"HTPasswd",
     htpasswd:{fileData:{name:"workshop-htpasswd"}}
   }])}}' &gt; state/workshop-idp.json
-# Ask the authentication operator to reconcile the new identity provider.
+# Enable the provider.
 oc patch oauth cluster --type=merge --patch-file=state/workshop-idp.json
-# Give cluster administration only to the platform persona, never to dev.
+# Grant cluster administration to the platform account.
 oc adm policy add-cluster-role-to-user cluster-admin workshop-admin</code></pre>
 </div>
 </div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_3_switch_to_workshop_admin"><a class="anchor" href="#_3_switch_to_workshop_admin"></a>3. Switch to workshop-admin</h2>
+<div class="sectionbody">
 <div class="admonitionblock important">
 <table>
 <tr>
@@ -384,13 +293,9 @@ oc adm policy add-cluster-role-to-user cluster-admin workshop-admin</code></pre>
 </td>
 <td class="content">
 <div class="paragraph">
-<p><strong>Wait for authentication to reconcile: usually 1–3 minutes; the rollout command
-below waits up to 5 minutes.</strong> It can initially observe the old deployment before
-the operator starts its update. If the first login returns <code>401 Unauthorized</code>,
-wait about a minute, rerun the rollout check and retry the login. Do not recreate
-the password file or change permissions to work around this delay.
-A warning that <code>workshop-admin</code> is not yet found is possible before its first
-login; the role binding is still created for that username.</p>
+<p><strong>Allow 1–3 minutes for the login provider to become available.</strong> The rollout
+check waits up to 5 minutes. If the first login returns <code>401 Unauthorized</code>,
+wait one minute and retry.</p>
 </div>
 </td>
 </tr>
@@ -398,79 +303,58 @@ login; the role binding is still created for that username.</p>
 </div>
 <div class="listingblock execute">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh"># Wait for the OAuth pods to finish updating before trying the new provider.
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh"># Wait for the authentication deployment to update.
 oc rollout status deployment/oauth-openshift -n openshift-authentication --timeout=300s
-# Enter the workshop-admin password chosen above when prompted.
+# Enter the workshop-admin password you just chose.
 oc login -u workshop-admin
-# Confirm the named administrator session; expect workshop-admin.
+# Expect workshop-admin; keep this session for all platform labs.
 oc whoami</code></pre>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_check_in_the_web_console"><a class="anchor" href="#_check_in_the_web_console"></a>Check in the web console</h3>
-<div class="listingblock execute">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh"># Print this cluster's console URL; no password is included in the output.
-oc whoami --show-console</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Open the printed URL, choose the <strong>workshop</strong> identity provider, and log in as
-<code>workshop-admin</code> with the password you chose. Check the user menu at the top
-right: it must show <code>workshop-admin</code>. The catalog workshop password is a
-<strong>different credential</strong>. Keep <code>dev</code> for the separate developer session in Act 2.</p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>HTPasswd stores hashes, so there is no command to retrieve these plaintext
-passwords later. Keep the two passwords privately. If you forget one, use the
-existing administrator/bastion session to repeat the matching <code>htpasswd</code> step and
-update the Secret; do not print Secrets into OpenCode or commit <code>state/</code>.</p>
-</div>
-</td>
-</tr>
-</table>
 </div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_checkpoint"><a class="anchor" href="#_checkpoint"></a>Checkpoint</h2>
+<h2 id="_4_detect_the_azure_resource_group"><a class="anchor" href="#_4_detect_the_azure_resource_group"></a>4. Detect the Azure resource group</h2>
 <div class="sectionbody">
-<div class="ulist checklist">
-<ul class="checklist">
-<li>
-<p><i class="fa fa-check-square-o"></i> Existing ARO cluster accessible with cluster-admin permissions</p>
-</li>
-<li>
-<p><i class="fa fa-check-square-o"></i> Bastion signed in through <code>oc login</code></p>
-</li>
-<li>
-<p><i class="fa fa-check-square-o"></i> Workers Ready</p>
-</li>
-<li>
-<p><i class="fa fa-check-square-o"></i> Azure identity and assigned resource group available</p>
-</li>
-<li>
-<p><i class="fa fa-check-square-o"></i> Workshop repository cloned</p>
-</li>
-<li>
-<p><i class="fa fa-check-square-o"></i> Both HTPasswd logins created; only workshop-admin has cluster-admin</p>
-</li>
-<li>
-<p><i class="fa fa-check-square-o"></i> Console login verified as workshop-admin</p>
-</li>
-</ul>
+<div class="paragraph">
+<p>The discovery tool matches the connected cluster to its Azure resource.
+It saves the subscription and resource group for later commands and keeps
+your <code>workshop-admin</code> session.</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh"># Discover the assigned ARO resource; no resource group ID needs replacing.
+python3 scripts/workshop-env.py
+# Load the detected values into this terminal.
+source state/workshop.env
+# Confirm the group where the workshop will create its Azure resources.
+az group show --name "$RESOURCEGROUP" --subscription "$SUBSCRIPTION" \
+  --query '{name:name,id:id,location:location}' -o table</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_5_open_the_console"><a class="anchor" href="#_5_open_the_console"></a>5. Open the console</h2>
+<div class="sectionbody">
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh"># Print your cluster's web console URL.
+oc whoami --show-console</code></pre>
+</div>
 </div>
 <div class="paragraph">
-<p>Continue to <strong>Lab 1.1 — Install All Operators</strong>.</p>
+<p>Open the URL, choose the <strong>workshop</strong> login provider, then use <code>workshop-admin</code>
+and its password from Step 2. Check that the user menu shows <strong>workshop-admin</strong>.
+Keep the <code>dev</code> account for Act 2. These account passwords are separate from the
+workshop password used to open Cloud Terminal.</p>
+</div>
+<div class="paragraph">
+<p><strong>Ready to continue:</strong> the CLI and console both use <code>workshop-admin</code>, your nodes
+are Ready, and <code>state/workshop.env</code> contains the detected Azure resource group.</p>
+</div>
+<div class="paragraph">
+<p>Continue to <a href="../200-platform/lab_1_operators.html" class="xref page">Lab 1.1 — Install All Operators</a>.</p>
 </div>
 </div>
 </div>

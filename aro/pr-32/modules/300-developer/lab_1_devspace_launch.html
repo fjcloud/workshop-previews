@@ -146,7 +146,7 @@
 <td class="content">
 <div class="paragraph">
 <p><strong>Review preview — PR 32, not the published workshop.</strong>
-This page comes from commit <code>ebcde0ef63f873d183a56da9f1e63c22ea373e71</code> on branch <code>docs/aro-guided-workshop-pr-preview</code>.
+This page comes from commit <code>1e0013a7541bd0e383bc58b6a9cd248a27df5f52</code> on branch <code>docs/aro-guided-workshop-pr-preview</code>.
 Read the changes and leave feedback in
 <a href="https://github.com/fjcloud/aro-ai-app-platform/pull/32">the pull request</a>.
 The production workshop on <code>main</code> is unchanged. The clone command in Act 0
@@ -159,14 +159,10 @@ uses this review branch so its proposed manifests can be reviewed together.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_what_you_will_do_and_why"><a class="anchor" href="#_what_you_will_do_and_why"></a>What you will do and why</h2>
+<h2 id="_goal"><a class="anchor" href="#_goal"></a>Goal</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p><strong>Goal: Start the developer experience with the dev account.</strong>
-Open an isolated browser workspace containing the editor, CLI tools, model configuration and app template. You consume the platform built in Act 1; you do not install OpenShift AI, create a DataScienceCluster, or grant pod security permissions. This is the handoff from platform engineering to application development.</p>
-</div>
-<div class="paragraph">
-<p>Welcome to Act 2. You are now the <strong>Developer</strong>. Everything you need — editor, terminal, and OpenCode pointed at DeepSeek-V4 Pro — is in the browser through <strong>OpenShift Dev Spaces</strong>. No laptop installation is required. The model is published through the OpenShift AI MaaS gateway prepared in Act 1.</p>
+<p>Open a browser workspace with the app template, CLI tools and OpenCode configured for DeepSeek. Sign in as <code>dev</code> to use the platform prepared in Act 1.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -187,34 +183,10 @@ Open an isolated browser workspace containing the editor, CLI tools, model confi
 </div>
 </div>
 <div class="sect1">
-<h2 id="_what_is_openshift_dev_spaces"><a class="anchor" href="#_what_is_openshift_dev_spaces"></a>What is OpenShift Dev Spaces?</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>OpenShift Dev Spaces provides <strong>cloud-based developer workspaces</strong> — VS Code-compatible IDEs that run as pods in the cluster. Key benefits:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><strong>Zero local setup:</strong> the workspace comes pre-configured; just open a browser</p>
-</li>
-<li>
-<p><strong>Consistent environment:</strong> every developer gets the same tools, versions, and configuration</p>
-</li>
-<li>
-<p><strong>Model access:</strong> the workspace calls MaaS at <code>$OPENAI_BASE_URL</code> with an injected MaaS key — same chat-completions JSON, pay per token</p>
-</li>
-<li>
-<p><strong>Persistent storage:</strong> your work survives closing the browser, but remains tied to the lifetime of this RHDP environment. Export anything you want to keep before it expires</p>
-</li>
-</ul>
-</div>
-</div>
-</div>
-<div class="sect1">
 <h2 id="_get_the_dev_spaces_url"><a class="anchor" href="#_get_the_dev_spaces_url"></a>Get the Dev Spaces URL</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The models and runtime agent backend are now ready. In the <strong>bastion terminal</strong>, generate the workspace launch link:</p>
+<p>The models and runtime agent backend are now ready. In the <strong>cluster terminal</strong>, generate the workspace launch link:</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -224,9 +196,7 @@ Open an isolated browser workspace containing the editor, CLI tools, model confi
 </td>
 <td class="content">
 <div class="paragraph">
-<p><strong>Run in the bastion terminal</strong>: the existing browser terminal beside this guide in
-Cloud Terminal. Use the workshop checkout (<code>~/aro-ai-app-platform</code>). Stay signed
-in as <code>workshop-admin</code> for the platform labs; Act 0 explains the initial login.</p>
+<p><strong>Terminal: cluster</strong> — the shell beside this guide.</p>
 </div>
 </td>
 </tr>
@@ -245,39 +215,10 @@ printf '%s/#%s?ai-provider=opencodeai/opencode\n' "${DEVSPACES_URL%/}" "$TEMPLAT
 </div>
 </div>
 <div class="paragraph">
-<p>Open the printed link in your browser. It clones the Card Scout template and creates the workspace from its <code>devfile.yaml</code>.</p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>The <code>#&lt;template-url&gt;</code> suffix tells Dev Spaces to clone the template and create a workspace from its <code>devfile.yaml</code> automatically. OpenCode is injected by the platform. The project <code>opencode.json</code> already pins DeepSeek through MaaS. The workspace comes pre-loaded with a short <code>AGENTS.md</code>, <code>APP_CONTRACT.md</code>, acceptance tests, <code>DELIVERY.md</code> and the delivery scaffold — you only need to write the application code.</p>
-</div>
-</td>
-</tr>
-</table>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Open that URL in your browser.</p>
-</li>
-</ol>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_switch_to_the_developer_account"><a class="anchor" href="#_switch_to_the_developer_account"></a>Switch to the developer account</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Choose the <strong>workshop</strong> identity provider and sign in as <code>dev</code> with the developer password created in Act 0. The workshop catalog password is different. Use the separate developer browser
-profile/private window from Lab 1.7. If the browser logs you straight in as
-<code>workshop-admin</code>, sign out or change browser profile before creating a workspace.
-The project <strong>dev-devspaces</strong> is already prepared for <code>dev</code>. Keep the OpenShift password out of OpenCode and Git; the developer terminal receives its own scoped identity.</p>
+<p>Open the printed link in a <strong>private window or separate browser profile</strong>.
+This keeps the developer&#8217;s login separate from your administrator session.
+The link selects the template and OpenCode; Dev Spaces creates a workspace in
+the prepared <strong>dev-devspaces</strong> project.</p>
 </div>
 </div>
 </div>
@@ -345,7 +286,7 @@ to inspect, not proof that the IDE is ready.</p>
 <li>
 <p>OpenCode available on <code>PATH</code> (injected by Dev Spaces, not by the template)</p>
 <div class="paragraph">
-<p>Do <strong>not</strong> sign in to GitHub Copilot. Che Code ships Copilot as a built-in; the platform disables it. Do not install Continue. Use OpenCode in the terminal to call DeepSeek-V4 Pro.</p>
+<p>Use OpenCode in the terminal to call DeepSeek-V4 Pro.</p>
 </div>
 </li>
 </ul>
@@ -354,7 +295,8 @@ to inspect, not proof that the IDE is ready.</p>
 </ol>
 </div>
 <div class="paragraph">
-<p>If the editor opens in <strong>Restricted Mode</strong>, open <strong>Manage Workspace Trust</strong>, trust this repository, and confirm. The IDE may reload before its terminal becomes available.</p>
+<p>If the editor opens in <strong>Restricted Mode</strong>, click <strong>Manage</strong> in the banner, then
+<strong>Trust</strong>. The IDE may reload before its terminal becomes available.</p>
 </div>
 </div>
 </div>
@@ -365,7 +307,7 @@ to inspect, not proof that the IDE is ready.</p>
 <p>In the browser editor’s top menu, choose <strong>Terminal → New Terminal</strong>. A shell opens
 in the bottom panel. If the menu is collapsed, use the editor’s main menu or
 <span class="keyseq"><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd></span>, then run <strong>Terminal: Create New Terminal</strong>. This is the Dev Spaces
-terminal; the WeTTY terminal beside this guide is still the bastion.</p>
+terminal. Use it for all Act 2 commands.</p>
 </div>
 <div class="paragraph">
 <p>Run developer commands here, in <code>$PROJECT_SOURCE</code>. Shell blocks go into this
@@ -387,10 +329,7 @@ terminal; natural-language prompt blocks go into OpenCode after it starts.</p>
 </td>
 <td class="content">
 <div class="paragraph">
-<p><strong>Run inside Dev Spaces</strong>, not in the bastion: open <strong>Terminal → New Terminal</strong> in
-the browser editor and use the project directory (<code>$PROJECT_SOURCE</code>). Sign in
-to the Dev Spaces website as <code>dev</code>; its terminal receives a separate, limited
-<code>workshop-developer</code> service account for CLI commands.</p>
+<p><strong>Terminal: Dev Spaces</strong> — in the editor, choose <strong>Terminal → New Terminal</strong>.</p>
 </div>
 </td>
 </tr>
@@ -403,13 +342,13 @@ oc whoami
 # Expect yes: the scoped identity can start application builds.
 oc auth can-i create pipelineruns -n "${APP_NAME}-build"
 # Expect yes: this identity can deploy in the application project.
-oc auth can-i create deployments -n "${APP_NAME}-dev"
-# Expect no: the developer has no permission to run privileged build pods.
-oc auth can-i use scc/privileged -n "${APP_NAME}-build"</code></pre>
+oc auth can-i create deployments -n "${APP_NAME}-dev"</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Expect the <code>workshop-developer</code> service account, then <code>yes</code>, <code>yes</code>, and <code>no</code>. The final <code>no</code> is intentional: OpenCode must not grant SCCs or use privileged containers. If build/deploy access is missing, ask the facilitator to rerun <code>scripts/prepare-developer.py</code> and restart the workspace. Keep the scoped identity; an administrator login is not a workaround.</p>
+<p>Expect <code>system:serviceaccount:card-scout-dev:workshop-developer</code>, then <code>yes</code>
+and <code>yes</code>. If access is missing, ask the platform engineer to repeat the
+preparation in Lab 1.7 and restart the workspace.</p>
 </div>
 <div class="paragraph">
 <p>The template also includes a local-only browser component for acceptance tests.
@@ -436,10 +375,7 @@ is needed in the developer container. The generated app remains a Go application
 </td>
 <td class="content">
 <div class="paragraph">
-<p><strong>Run inside Dev Spaces</strong>, not in the bastion: open <strong>Terminal → New Terminal</strong> in
-the browser editor and use the project directory (<code>$PROJECT_SOURCE</code>). Sign in
-to the Dev Spaces website as <code>dev</code>; its terminal receives a separate, limited
-<code>workshop-developer</code> service account for CLI commands.</p>
+<p><strong>Terminal: Dev Spaces</strong> — in the editor, choose <strong>Terminal → New Terminal</strong>.</p>
 </div>
 </td>
 </tr>
@@ -468,7 +404,7 @@ GIT_SERVER=https://git.&lt;workshop-domain&gt;</code></pre>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Check the project model configuration against the platform. The template&#8217;s <code>opencode.json</code> wins over the platform file; both should pin DeepSeek through MaaS. The following also updates older workspaces when needed. This file contains environment references; it contains no key. From the workspace terminal:</p>
+<p>Check the project model configuration against the platform. The template&#8217;s <code>opencode.json</code> wins over the platform file; both should pin DeepSeek through MaaS. This file contains environment references; it contains no key. From the workspace terminal:</p>
 <div class="admonitionblock note">
 <table>
 <tr>
@@ -477,10 +413,7 @@ GIT_SERVER=https://git.&lt;workshop-domain&gt;</code></pre>
 </td>
 <td class="content">
 <div class="paragraph">
-<p><strong>Run inside Dev Spaces</strong>, not in the bastion: open <strong>Terminal → New Terminal</strong> in
-the browser editor and use the project directory (<code>$PROJECT_SOURCE</code>). Sign in
-to the Dev Spaces website as <code>dev</code>; its terminal receives a separate, limited
-<code>workshop-developer</code> service account for CLI commands.</p>
+<p><strong>Terminal: Dev Spaces</strong> — in the editor, choose <strong>Terminal → New Terminal</strong>.</p>
 </div>
 </td>
 </tr>
@@ -526,10 +459,11 @@ limited service account so OpenCode cannot administer the cluster.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_understanding_the_opencode_configuration"><a class="anchor" href="#_understanding_the_opencode_configuration"></a>Understanding the OpenCode Configuration</h2>
+<h2 id="_model_configuration"><a class="anchor" href="#_model_configuration"></a>Model configuration</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>OpenCode reads <strong>project</strong> <code>opencode.json</code> first (it overrides the platform mount under <code>~/.config/opencode</code>). Verify the file in the template:</p>
+<p>OpenCode uses the project <code>opencode.json</code>. Inspect it to confirm the model is
+<code>deepseek/deepseekv4pro</code> and the URL and key are environment references:</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -539,10 +473,7 @@ limited service account so OpenCode cannot administer the cluster.</p>
 </td>
 <td class="content">
 <div class="paragraph">
-<p><strong>Run inside Dev Spaces</strong>, not in the bastion: open <strong>Terminal → New Terminal</strong> in
-the browser editor and use the project directory (<code>$PROJECT_SOURCE</code>). Sign in
-to the Dev Spaces website as <code>dev</code>; its terminal receives a separate, limited
-<code>workshop-developer</code> service account for CLI commands.</p>
+<p><strong>Terminal: Dev Spaces</strong> — in the editor, choose <strong>Terminal → New Terminal</strong>.</p>
 </div>
 </td>
 </tr>
@@ -550,48 +481,9 @@ to the Dev Spaces website as <code>dev</code>; its terminal receives a separate,
 </div>
 <div class="listingblock execute">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh"># Inspect the configured provider/model names without printing the injected API key.
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh"># Inspect the model configuration without printing the injected key.
 jq . "${PROJECT_SOURCE}/opencode.json"</code></pre>
 </div>
-</div>
-<div class="paragraph">
-<p>Expected content:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
-  "$schema": "https://opencode.ai/config.json",
-  "provider": {
-    "deepseek": {
-      "npm": "@ai-sdk/openai-compatible",
-      "name": "DeepSeek-V4 Pro",
-      "options": {
-        "baseURL": "{env:OPENAI_BASE_URL}",
-        "apiKey": "{env:OPENAI_API_KEY}",
-        "chunkTimeout": 120000,
-        "timeout": 600000
-      },
-      "models": {
-        "deepseekv4pro": {
-          "name": "DeepSeek-V4 Pro",
-          "limit": {
-            "context": 131072,
-            "output": 32768
-          }
-        }
-      }
-    }
-  },
-  "model": "deepseek/deepseekv4pro",
-  "autoupdate": false
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>OpenCode still reads <code>AGENTS.md</code> from the project directory at the start of every session. These instructions guide generation. Tekton validates the image reference, and you check the deployed application in Lab 2.3.</p>
-</div>
-<div class="paragraph">
-<p><code>limit.output</code> is 32 768. Keep prompts specific and review usage and pricing in Lab 3.1.</p>
 </div>
 </div>
 </div>
@@ -606,10 +498,7 @@ jq . "${PROJECT_SOURCE}/opencode.json"</code></pre>
 </td>
 <td class="content">
 <div class="paragraph">
-<p><strong>Run inside Dev Spaces</strong>, not in the bastion: open <strong>Terminal → New Terminal</strong> in
-the browser editor and use the project directory (<code>$PROJECT_SOURCE</code>). Sign in
-to the Dev Spaces website as <code>dev</code>; its terminal receives a separate, limited
-<code>workshop-developer</code> service account for CLI commands.</p>
+<p><strong>Terminal: Dev Spaces</strong> — in the editor, choose <strong>Terminal → New Terminal</strong>.</p>
 </div>
 </td>
 </tr>

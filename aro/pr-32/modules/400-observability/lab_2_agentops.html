@@ -146,7 +146,7 @@
 <td class="content">
 <div class="paragraph">
 <p><strong>Review preview — PR 32, not the published workshop.</strong>
-This page comes from commit <code>ebcde0ef63f873d183a56da9f1e63c22ea373e71</code> on branch <code>docs/aro-guided-workshop-pr-preview</code>.
+This page comes from commit <code>1e0013a7541bd0e383bc58b6a9cd248a27df5f52</code> on branch <code>docs/aro-guided-workshop-pr-preview</code>.
 Read the changes and leave feedback in
 <a href="https://github.com/fjcloud/aro-ai-app-platform/pull/32">the pull request</a>.
 The production workshop on <code>main</code> is unchanged. The clone command in Act 0
@@ -159,15 +159,10 @@ uses this review branch so its proposed manifests can be reviewed together.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_what_you_will_do_and_why"><a class="anchor" href="#_what_you_will_do_and_why"></a>What you will do and why</h2>
+<h2 id="_goal"><a class="anchor" href="#_goal"></a>Goal</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p><strong>Goal: Verify an agent action instead of trusting its prose.</strong>
-Follow the app’s exact MLflow trace and repeat a lookup in the OpenShift AI Playground. You will inspect the real model and MCP tool inputs and outputs. The value is evidence: a plausible price answer is not enough unless the tool fetched the correct catalogue reference and dated source.</p>
-</div>
-<div class="paragraph">
-<p>Verify a price lookup using the actual catalogue evidence and model/tool spans.
-The same prepared MCP tool is available in the OpenShift AI Playground.</p>
+<p>Follow a price lookup through its MLflow trace, then test the same tool in the OpenShift AI Playground. Verify the catalogue reference and dated source behind the answer.</p>
 </div>
 </div>
 </div>
@@ -206,7 +201,7 @@ a visible UI answer alone does not prove trace export succeeded.</p>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Use the OpenShift AI URL printed in Lab 1.3 (<code><a href="https://rh-ai.&lt;apps-domain&gt" class="bare">https://rh-ai.&lt;apps-domain&gt</a>;</code>).
-The administrator can print it again from the bastion:</p>
+The administrator can print it again from the cluster terminal:</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -216,9 +211,7 @@ The administrator can print it again from the bastion:</p>
 </td>
 <td class="content">
 <div class="paragraph">
-<p><strong>Run in the bastion terminal</strong>: the existing browser terminal beside this guide in
-Cloud Terminal. Use the workshop checkout (<code>~/aro-ai-app-platform</code>). Stay signed
-in as <code>workshop-admin</code> for the platform labs; Act 0 explains the initial login.</p>
+<p><strong>Terminal: cluster</strong> — the shell beside this guide.</p>
 </div>
 </td>
 </tr>
@@ -248,12 +241,6 @@ just to make administrator screens visible.</p>
 <p>Open <strong>Red Hat OpenShift AI → Gen AI studio → Playground</strong>. Select project
 <code>card-scout-dev</code>. In <strong>Settings → Model</strong>, select
 <code>maas-vllm-inference-1/deepseekv4pro</code> and <strong>Card Scout runtime</strong>.</p>
-</div>
-<div class="paragraph">
-<p>The captures illustrate the Playground controls from an earlier administrator
-session and may show the old project name <code>signal-desk-dev</code> or <code>kube:admin</code>.
-In this revision, sign in as <strong>dev</strong> and select <strong>card-scout-dev</strong>. Use the controls
-shown in the captures, not their old project or account names.</p>
 </div>
 <div class="imageblock">
 <div class="content">

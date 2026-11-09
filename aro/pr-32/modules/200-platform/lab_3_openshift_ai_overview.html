@@ -146,7 +146,7 @@
 <td class="content">
 <div class="paragraph">
 <p><strong>Review preview — PR 32, not the published workshop.</strong>
-This page comes from commit <code>ebcde0ef63f873d183a56da9f1e63c22ea373e71</code> on branch <code>docs/aro-guided-workshop-pr-preview</code>.
+This page comes from commit <code>1e0013a7541bd0e383bc58b6a9cd248a27df5f52</code> on branch <code>docs/aro-guided-workshop-pr-preview</code>.
 Read the changes and leave feedback in
 <a href="https://github.com/fjcloud/aro-ai-app-platform/pull/32">the pull request</a>.
 The production workshop on <code>main</code> is unchanged. The clone command in Act 0
@@ -159,14 +159,10 @@ uses this review branch so its proposed manifests can be reviewed together.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_what_you_will_do_and_why"><a class="anchor" href="#_what_you_will_do_and_why"></a>What you will do and why</h2>
+<h2 id="_goal"><a class="anchor" href="#_goal"></a>Goal</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p><strong>Goal: Offer a model as a governed platform API.</strong>
-Register the external DeepSeek deployment in OpenShift AI and expose it through Models-as-a-Service (MaaS). The value for a developer is a stable model name and endpoint with a limited client key. The value for the platform team is centralized access policy, token allowances and usage tracking, while the provider credential stays on the platform.</p>
-</div>
-<div class="paragraph">
-<p>Give developers the same access pattern whether a model runs on the cluster or at a cloud provider. Register DeepSeek on Foundry as an <strong>external model</strong> in OpenShift AI, then publish it through <strong>Models-as-a-Service</strong>: one HTTPS endpoint, a MaaS API key and a token quota.</p>
+<p>Publish DeepSeek through Models-as-a-Service (MaaS). Developers receive a stable endpoint and a limited client key; the platform retains the Azure provider key and controls token allowances.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -220,7 +216,7 @@ Register the external DeepSeek deployment in OpenShift AI and expose it through 
 <h2 id="_step_1_register_the_foundry_provider"><a class="anchor" href="#_step_1_register_the_foundry_provider"></a>Step 1: Register the Foundry provider</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Run from the workshop repository in the <strong>bastion terminal</strong>. Keep shell tracing (<code>set -x</code>) off.</p>
+<p>Run from the workshop repository in the <strong>cluster terminal</strong>. Keep shell tracing (<code>set -x</code>) off.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -230,9 +226,7 @@ Register the external DeepSeek deployment in OpenShift AI and expose it through 
 </td>
 <td class="content">
 <div class="paragraph">
-<p><strong>Run in the bastion terminal</strong>: the existing browser terminal beside this guide in
-Cloud Terminal. Use the workshop checkout (<code>~/aro-ai-app-platform</code>). Stay signed
-in as <code>workshop-admin</code> for the platform labs; Act 0 explains the initial login.</p>
+<p><strong>Terminal: cluster</strong> — the shell beside this guide.</p>
 </div>
 </td>
 </tr>
@@ -242,7 +236,7 @@ in as <code>workshop-admin</code> for the platform labs; Act 0 explains the init
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh"># Register the Foundry endpoint and store its provider key only on the platform.
 bash scripts/configure-coding-provider.sh
-# Inspect the named resource and its reported status before proceeding.
+# Inspect externalprovider.inference.opendatahub.io status.
 oc get externalprovider.inference.opendatahub.io foundry -n llm-serving</code></pre>
 </div>
 </div>
@@ -262,9 +256,7 @@ oc get externalprovider.inference.opendatahub.io foundry -n llm-serving</code></
 </td>
 <td class="content">
 <div class="paragraph">
-<p><strong>Run in the bastion terminal</strong>: the existing browser terminal beside this guide in
-Cloud Terminal. Use the workshop checkout (<code>~/aro-ai-app-platform</code>). Stay signed
-in as <code>workshop-admin</code> for the platform labs; Act 0 explains the initial login.</p>
+<p><strong>Terminal: cluster</strong> — the shell beside this guide.</p>
 </div>
 </td>
 </tr>
@@ -312,7 +304,7 @@ oc get maasauthpolicy,maassubscription -n models-as-a-service</code></pre>
 <p><strong>Allow 2–5 minutes for a fresh registration and its access policy to reconcile.</strong>
 Each wait above permits 5 minutes. A short-lived <code>Degraded</code> label while supporting
 components start is not the final result. Continue only when the model/provider
-checks are Ready and the workshop subscription is Active/Ready. If a wait times
+checks are Ready and the workshop subscription is Ready. If a wait times
 out or <code>Degraded</code> persists, inspect the conditions below; do not mint more keys,
 grant administrator access, or silently switch model providers.</p>
 </div>
@@ -332,9 +324,7 @@ use the status message to identify the failing layer:</p>
 </td>
 <td class="content">
 <div class="paragraph">
-<p><strong>Run in the bastion terminal</strong>: the existing browser terminal beside this guide in
-Cloud Terminal. Use the workshop checkout (<code>~/aro-ai-app-platform</code>). Stay signed
-in as <code>workshop-admin</code> for the platform labs; Act 0 explains the initial login.</p>
+<p><strong>Terminal: cluster</strong> — the shell beside this guide.</p>
 </div>
 </td>
 </tr>
@@ -346,7 +336,7 @@ in as <code>workshop-admin</code> for the platform labs; Act 0 explains the init
 oc get externalprovider.inference.opendatahub.io foundry -n llm-serving -o json | jq '{phase:.status.phase,conditions:.status.conditions}'
 # Inspect the external deployment and the model published through MaaS.
 oc get externalmodel.inference.opendatahub.io deepseekv4pro -n llm-serving -o json | jq '{phase:.status.phase,conditions:.status.conditions}'
-# Inspect the named resource and its reported status before proceeding.
+# Inspect maasmodelref status.
 oc get maasmodelref deepseekv4pro -n llm-serving -o json | jq '{phase:.status.phase,conditions:.status.conditions}'
 # Inspect the tenant's component readiness and its reported failure reasons.
 oc get maastenantconfig default-tenant -n models-as-a-service -o json | jq '{phase:.status.phase,conditions:.status.conditions}'
@@ -370,7 +360,7 @@ that every monitoring or UI component is healthy.</p>
 <h2 id="_step_3_give_dev_spaces_a_maas_key"><a class="anchor" href="#_step_3_give_dev_spaces_a_maas_key"></a>Step 3: Give Dev Spaces a MaaS key</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Act 0 signs the bastion in automatically. If the session has expired, run <code>make onboard</code> again before creating the key.</p>
+<p>If your session has expired, run <code>oc login -u workshop-admin</code> before creating the key.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -380,9 +370,7 @@ that every monitoring or UI component is healthy.</p>
 </td>
 <td class="content">
 <div class="paragraph">
-<p><strong>Run in the bastion terminal</strong>: the existing browser terminal beside this guide in
-Cloud Terminal. Use the workshop checkout (<code>~/aro-ai-app-platform</code>). Stay signed
-in as <code>workshop-admin</code> for the platform labs; Act 0 explains the initial login.</p>
+<p><strong>Terminal: cluster</strong> — the shell beside this guide.</p>
 </div>
 </td>
 </tr>
@@ -413,9 +401,7 @@ bash deploy/coding/mint-workshop-key.sh</code></pre>
 </td>
 <td class="content">
 <div class="paragraph">
-<p><strong>Run in the bastion terminal</strong>: the existing browser terminal beside this guide in
-Cloud Terminal. Use the workshop checkout (<code>~/aro-ai-app-platform</code>). Stay signed
-in as <code>workshop-admin</code> for the platform labs; Act 0 explains the initial login.</p>
+<p><strong>Terminal: cluster</strong> — the shell beside this guide.</p>
 </div>
 </td>
 </tr>
@@ -449,7 +435,7 @@ unset OPENAI_API_KEY</code></pre>
 <h2 id="_open_openshift_ai_and_verify_the_published_model"><a class="anchor" href="#_open_openshift_ai_and_verify_the_published_model"></a>Open OpenShift AI and verify the published model</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>First recover the URLs from the <strong>bastion terminal</strong>, still as <code>workshop-admin</code>:</p>
+<p>First recover the URLs from the <strong>cluster terminal</strong>, still as <code>workshop-admin</code>:</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -459,9 +445,7 @@ unset OPENAI_API_KEY</code></pre>
 </td>
 <td class="content">
 <div class="paragraph">
-<p><strong>Run in the bastion terminal</strong>: the existing browser terminal beside this guide in
-Cloud Terminal. Use the workshop checkout (<code>~/aro-ai-app-platform</code>). Stay signed
-in as <code>workshop-admin</code> for the platform labs; Act 0 explains the initial login.</p>
+<p><strong>Terminal: cluster</strong> — the shell beside this guide.</p>
 </div>
 </td>
 </tr>
@@ -493,29 +477,35 @@ This is not the catalog password or a model API key. Close the welcome tour.</p>
 can hide the model even though the CLI deployment succeeded.</p>
 </li>
 <li>
-<p>Open <strong>DeepSeek-V4 Pro (Microsoft Foundry)</strong> (<code>deepseekv4pro</code>) and inspect provider
-<strong>foundry</strong>. The external registration means inference still runs on Azure; no
-local DeepSeek GPU pod is expected.</p>
+<p>Find <strong>DeepSeek-V4 Pro (Microsoft Foundry)</strong> (<code>deepseekv4pro</code>), provider
+<strong>foundry</strong>, with status <strong>Ready</strong>. Expand its row to inspect the provider details.
+Inference runs on Azure.</p>
 </li>
 <li>
 <p>Go to <strong>Settings → MaaS governance → Subscriptions</strong>. Find
-<strong>deepseekv4pro-workshop</strong>. It should be <strong>Active</strong>.</p>
+<strong>DeepSeek-V4 Pro workshop subscription</strong> (<code>deepseekv4pro-workshop</code>), with
+status <strong>Ready</strong>.</p>
 </li>
 <li>
-<p>Click the subscription name. In its model details, expand <strong>deepseekv4pro</strong> to
-inspect its token limit and window. If the list shows a <strong>Models</strong> count instead,
-click that count to expand the associated model and token limits.</p>
-</li>
-<li>
-<p>Verify <strong>10,000,000 tokens per 24 hours</strong>. This is the configured allowance,
-not a remaining-balance display or an Azure spending limit. You do not need to
-edit the subscription to inspect it.</p>
+<p>In that row, click <strong>1</strong> in the <strong>Models</strong> column. This expands the model&#8217;s
+<strong>Token limits</strong>: verify <strong>10,000,000 / 24 hours</strong>. This is the configured
+allowance; remaining usage is explored in Lab 3.1.</p>
 </li>
 <li>
 <p>In <strong>Gen AI studio → AI asset endpoints</strong>, find the published model endpoint.
 Act 2 will use it from OpenCode; the Playground is exercised in Lab 3.2.</p>
 </li>
 </ol>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<a class="image" href="../_images/workshop-external-deepseek.png"><img src="../_images/workshop-external-deepseek.png" alt="External DeepSeek model in the llm-serving project"></a>
+</div>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<a class="image" href="../_images/workshop-maas-token-limits.png"><img src="../_images/workshop-maas-token-limits.png" alt="MaaS subscription with the Models column expanded to show token limits"></a>
+</div>
 </div>
 <div class="paragraph">
 <p>For reference, the same configuration can be inspected without changing it:</p>
@@ -528,9 +518,7 @@ Act 2 will use it from OpenCode; the Playground is exercised in Lab 3.2.</p>
 </td>
 <td class="content">
 <div class="paragraph">
-<p><strong>Run in the bastion terminal</strong>: the existing browser terminal beside this guide in
-Cloud Terminal. Use the workshop checkout (<code>~/aro-ai-app-platform</code>). Stay signed
-in as <code>workshop-admin</code> for the platform labs; Act 0 explains the initial login.</p>
+<p><strong>Terminal: cluster</strong> — the shell beside this guide.</p>
 </div>
 </td>
 </tr>

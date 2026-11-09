@@ -146,7 +146,7 @@
 <td class="content">
 <div class="paragraph">
 <p><strong>Review preview — PR 32, not the published workshop.</strong>
-This page comes from commit <code>ebcde0ef63f873d183a56da9f1e63c22ea373e71</code> on branch <code>docs/aro-guided-workshop-pr-preview</code>.
+This page comes from commit <code>1e0013a7541bd0e383bc58b6a9cd248a27df5f52</code> on branch <code>docs/aro-guided-workshop-pr-preview</code>.
 Read the changes and leave feedback in
 <a href="https://github.com/fjcloud/aro-ai-app-platform/pull/32">the pull request</a>.
 The production workshop on <code>main</code> is unchanged. The clone command in Act 0
@@ -159,14 +159,10 @@ uses this review branch so its proposed manifests can be reviewed together.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_what_you_will_do_and_why"><a class="anchor" href="#_what_you_will_do_and_why"></a>What you will do and why</h2>
+<h2 id="_goal"><a class="anchor" href="#_goal"></a>Goal</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p><strong>Goal: Prepare the reusable backend that keeps the generated app small.</strong>
-Deploy the fixed image dataset, persistent analysis state, native OpenShift AI agent and read-only price tool. The developer will consume these prepared capabilities through one API, rather than implement model orchestration, credentials, scraping and trace export in the generated UI. Separating the platform from the UI makes the result easier to generate, test and explain.</p>
-</div>
-<div class="paragraph">
-<p>Prepare the complete English Base Set dataset, local image classification and a native OpenShift AI agent that verifies catalogue references and retrieves dated market prices. The developer will generate only a small Go UI and proxy.</p>
+<p>Provide the fixed card dataset, image classification, native OpenShift AI agent, price tool and MLflow traces behind one API. The developer can then generate a small UI without rebuilding these services.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -193,7 +189,7 @@ Deploy the fixed image dataset, persistent analysis state, native OpenShift AI a
 <p>Create <a href="https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/working_with_ogx/deploying-ogx-server_rag"><code>OGXServer/lsd-genai-playground</code></a> explicitly in <code>card-scout-dev</code>. The OpenShift AI operator creates its Deployment and Service using the Red Hat OGX image. The configuration points to the existing MaaS DeepSeek model; it contains no model key.</p>
 </div>
 <div class="paragraph">
-<p>From the bastion, update the checkout and apply the backend resources:</p>
+<p>From the cluster terminal, update the checkout and apply the backend resources:</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -203,9 +199,7 @@ Deploy the fixed image dataset, persistent analysis state, native OpenShift AI a
 </td>
 <td class="content">
 <div class="paragraph">
-<p><strong>Run in the bastion terminal</strong>: the existing browser terminal beside this guide in
-Cloud Terminal. Use the workshop checkout (<code>~/aro-ai-app-platform</code>). Stay signed
-in as <code>workshop-admin</code> for the platform labs; Act 0 explains the initial login.</p>
+<p><strong>Terminal: cluster</strong> — the shell beside this guide.</p>
 </div>
 </td>
 </tr>
@@ -229,14 +223,13 @@ oc apply -k deploy/card-scout/agent
 # Wait for the CLI-created native agent backend to become Ready.
 oc wait ogxserver/lsd-genai-playground -n card-scout-dev \
   --for=jsonpath='{.status.phase}'=Ready --timeout=600s
-# Wait for the named deployment’s new pods to become available within the displayed timeout.
+# Wait for the deployment to become available.
 oc rollout status deployment/lsd-genai-playground -n card-scout-dev --timeout=600s
-# Inspect the named resource and its reported status before proceeding.
+# Inspect deployment status.
 oc get deployment lsd-genai-playground -n card-scout-dev
-# Inspect the named resource and its reported status before proceeding.
+# Inspect service status.
 oc get service lsd-genai-playground-service -n card-scout-dev
-# Inspect pod readiness; for an app digest check, compare the running image with the build
-# result.
+# Inspect the model pods and their readiness.
 oc get pods -n card-scout-dev
 # Inspect the trace service’s readiness and web URL.
 oc get mlflow mlflow -o json | jq '{conditions:.status.conditions,url:.status.url}'</code></pre>
@@ -296,9 +289,7 @@ inspect this OGXServer and its pod events before running the configuration helpe
 </td>
 <td class="content">
 <div class="paragraph">
-<p><strong>Run in the bastion terminal</strong>: the existing browser terminal beside this guide in
-Cloud Terminal. Use the workshop checkout (<code>~/aro-ai-app-platform</code>). Stay signed
-in as <code>workshop-admin</code> for the platform labs; Act 0 explains the initial login.</p>
+<p><strong>Terminal: cluster</strong> — the shell beside this guide.</p>
 </div>
 </td>
 </tr>
@@ -311,7 +302,7 @@ oc apply -k deploy/card-scout/access
 # Wait until the requested token-allowance subscription is usable.
 oc wait maassubscription/deepseekv4pro-card-scout -n models-as-a-service \
   --for=condition=Ready --timeout=180s
-# Verify the required app identity/storage resources and their state.
+# Check the created resources and their status.
 oc get serviceaccount,pvc -n card-scout-dev</code></pre>
 </div>
 </div>
@@ -333,9 +324,7 @@ dataset and all 105 images; the lab does not download card images at startup.</p
 </td>
 <td class="content">
 <div class="paragraph">
-<p><strong>Run in the bastion terminal</strong>: the existing browser terminal beside this guide in
-Cloud Terminal. Use the workshop checkout (<code>~/aro-ai-app-platform</code>). Stay signed
-in as <code>workshop-admin</code> for the platform labs; Act 0 explains the initial login.</p>
+<p><strong>Terminal: cluster</strong> — the shell beside this guide.</p>
 </div>
 </td>
 </tr>
@@ -347,13 +336,13 @@ in as <code>workshop-admin</code> for the platform labs; Act 0 explains the init
 python3 scripts/prepare-card-scout.py
 # Deploy the prepared dataset/API service; this is distinct from the generated Go app.
 oc apply -k deploy/card-scout
-# Wait for the named deployment’s new pods to become available within the displayed timeout.
+# Wait for the deployment to become available.
 oc rollout status deployment/card-scout-platform -n card-scout-dev --timeout=600s
-# Inspect the named resource and its reported status before proceeding.
+# Inspect service status.
 oc get service card-scout-platform -n card-scout-dev
-# Verify the required app identity/storage resources and their state.
+# Check the created resources and their status.
 oc get pvc card-scout-data -n card-scout-dev
-# Inspect the named resource and its reported status before proceeding.
+# Inspect configmap status.
 oc get configmap card-scout-config -n card-scout-dev -o json | jq .data
 # Confirm the named Secret exists; this command does not decode or print its credentials.
 oc get secret card-scout-model -n card-scout-dev</code></pre>
@@ -373,7 +362,7 @@ workload-editing grant.</p>
 <td class="content">
 <div class="paragraph">
 <p>The runtime MaaS key expires after 24 hours. If the agent&#8217;s model access expires,
-renew it in the <strong>bastion terminal</strong>:</p>
+renew it in the <strong>cluster terminal</strong>:</p>
 </div>
 <div class="listingblock execute">
 <div class="content">
@@ -381,7 +370,7 @@ renew it in the <strong>bastion terminal</strong>:</p>
 python3 scripts/prepare-card-scout.py
 # Restart the app pods to load the renewed configuration or newly pushed image.
 oc rollout restart deployment/card-scout-platform -n card-scout-dev
-# Wait for the named deployment’s new pods to become available within the displayed timeout.
+# Wait for the deployment to become available.
 oc rollout status deployment/card-scout-platform -n card-scout-dev --timeout=180s</code></pre>
 </div>
 </div>
@@ -407,9 +396,7 @@ calls one internal API supplied as <code>CARD_SCOUT_URL</code>. Its delivery sca
 </td>
 <td class="content">
 <div class="paragraph">
-<p><strong>Run in the bastion terminal</strong>: the existing browser terminal beside this guide in
-Cloud Terminal. Use the workshop checkout (<code>~/aro-ai-app-platform</code>). Stay signed
-in as <code>workshop-admin</code> for the platform labs; Act 0 explains the initial login.</p>
+<p><strong>Terminal: cluster</strong> — the shell beside this guide.</p>
 </div>
 </td>
 </tr>

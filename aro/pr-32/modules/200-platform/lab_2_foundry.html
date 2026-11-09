@@ -146,7 +146,7 @@
 <td class="content">
 <div class="paragraph">
 <p><strong>Review preview — PR 32, not the published workshop.</strong>
-This page comes from commit <code>ebcde0ef63f873d183a56da9f1e63c22ea373e71</code> on branch <code>docs/aro-guided-workshop-pr-preview</code>.
+This page comes from commit <code>1e0013a7541bd0e383bc58b6a9cd248a27df5f52</code> on branch <code>docs/aro-guided-workshop-pr-preview</code>.
 Read the changes and leave feedback in
 <a href="https://github.com/fjcloud/aro-ai-app-platform/pull/32">the pull request</a>.
 The production workshop on <code>main</code> is unchanged. The clone command in Act 0
@@ -159,14 +159,10 @@ uses this review branch so its proposed manifests can be reviewed together.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_what_you_will_do_and_why"><a class="anchor" href="#_what_you_will_do_and_why"></a>What you will do and why</h2>
+<h2 id="_goal"><a class="anchor" href="#_goal"></a>Goal</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p><strong>Goal: Give the workshop a language model for coding and tool use.</strong>
-Create a managed DeepSeek deployment in Microsoft Foundry, then verify it directly before adding the OpenShift gateway. This isolates provider-access or quota problems from MaaS configuration problems. DeepSeek writes and explains code and runs the price agent; it does not use the cluster’s T4.</p>
-</div>
-<div class="paragraph">
-<p>The operators are ready. Publish <strong>DeepSeek-V4 Pro</strong> as a managed endpoint on Microsoft Foundry. OpenCode uses that endpoint in Act 2. d3-mini will run separately on one T4 in Lab 1.6 to classify card images; it is not OpenCode’s coding model.</p>
+<p>Deploy DeepSeek on Microsoft Foundry for code generation and agent tool use. Test the provider directly before publishing it through the OpenShift AI gateway; DeepSeek runs on Azure, leaving the T4 for D3.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -234,7 +230,7 @@ Create a managed DeepSeek deployment in Microsoft Foundry, then verify it direct
 </tbody>
 </table>
 <div class="paragraph">
-<p>Act 0 detected the subscription and the resource group containing your ARO resource. Load <code>state/workshop.env</code> below; no names or IDs need replacing. If you changed your Azure or OpenShift login since Act 0, rerun <code>make onboard</code> first.</p>
+<p>Act 0 detected the subscription and the resource group containing your ARO resource. Load <code>state/workshop.env</code> below; no names or IDs need replacing. If your session expired, run <code>oc login -u workshop-admin</code>. If you changed Azure subscriptions, repeat the resource discovery in Act 0.</p>
 </div>
 <div class="paragraph">
 <p>Capacity controls throughput, not a fixed hourly charge. Capacity <code>1</code> only allows 1 000 tokens/minute in this lab: a short curl works, but coding prompts receive HTTP 429. Allocate <code>500</code> for this single-participant run; check the model quota before sharing the endpoint with a group.</p>
@@ -273,9 +269,7 @@ endpoint startup errors with a 10-second delay and allows 3 minutes per attempt.
 </td>
 <td class="content">
 <div class="paragraph">
-<p><strong>Run in the bastion terminal</strong>: the existing browser terminal beside this guide in
-Cloud Terminal. Use the workshop checkout (<code>~/aro-ai-app-platform</code>). Stay signed
-in as <code>workshop-admin</code> for the platform labs; Act 0 explains the initial login.</p>
+<p><strong>Terminal: cluster</strong> — the shell beside this guide.</p>
 </div>
 </td>
 </tr>
@@ -286,7 +280,7 @@ in as <code>workshop-admin</code> for the platform labs; Act 0 explains the init
 <pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh"># Load the subscription, resource group and cluster ID detected in Act 0.
 source state/workshop.env
 # Stop with a clear message if the resource-group discovery from Act 0 was not run.
-: "${RESOURCEGROUP:?Run make onboard successfully before this lab}"
+: "${RESOURCEGROUP:?Complete the resource discovery in Act 0 first}"
 # Verify access to the detected lab resource group; do not type another group ID.
 az group show --name "$RESOURCEGROUP" --subscription "$SUBSCRIPTION" --output none
 # Derive a lab suffix from the detected resource group.
@@ -340,9 +334,7 @@ az rest --method get \
 </td>
 <td class="content">
 <div class="paragraph">
-<p><strong>Run in the bastion terminal</strong>: the existing browser terminal beside this guide in
-Cloud Terminal. Use the workshop checkout (<code>~/aro-ai-app-platform</code>). Stay signed
-in as <code>workshop-admin</code> for the platform labs; Act 0 explains the initial login.</p>
+<p><strong>Terminal: cluster</strong> — the shell beside this guide.</p>
 </div>
 </td>
 </tr>
@@ -375,9 +367,7 @@ wait_foundry "https://management.azure.com/subscriptions/${SUBSCRIPTION}/resourc
 </td>
 <td class="content">
 <div class="paragraph">
-<p><strong>Run in the bastion terminal</strong>: the existing browser terminal beside this guide in
-Cloud Terminal. Use the workshop checkout (<code>~/aro-ai-app-platform</code>). Stay signed
-in as <code>workshop-admin</code> for the platform labs; Act 0 explains the initial login.</p>
+<p><strong>Terminal: cluster</strong> — the shell beside this guide.</p>
 </div>
 </td>
 </tr>

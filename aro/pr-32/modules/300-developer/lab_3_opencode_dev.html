@@ -146,7 +146,7 @@
 <td class="content">
 <div class="paragraph">
 <p><strong>Review preview — PR 32, not the published workshop.</strong>
-This page comes from commit <code>ebcde0ef63f873d183a56da9f1e63c22ea373e71</code> on branch <code>docs/aro-guided-workshop-pr-preview</code>.
+This page comes from commit <code>1e0013a7541bd0e383bc58b6a9cd248a27df5f52</code> on branch <code>docs/aro-guided-workshop-pr-preview</code>.
 Read the changes and leave feedback in
 <a href="https://github.com/fjcloud/aro-ai-app-platform/pull/32">the pull request</a>.
 The production workshop on <code>main</code> is unchanged. The clone command in Act 0
@@ -159,11 +159,10 @@ uses this review branch so its proposed manifests can be reviewed together.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_what_you_will_do_and_why"><a class="anchor" href="#_what_you_will_do_and_why"></a>What you will do and why</h2>
+<h2 id="_goal"><a class="anchor" href="#_goal"></a>Goal</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p><strong>Goal: Generate, test and ship a minimal real application.</strong>
-Use DeepSeek through OpenCode to implement the prepared contract, let the model use fixed acceptance tests to correct its own application, then deliver it through Tekton and Argo CD. The added value is a repeatable route from intent to a verified running image, not a local demo that bypasses delivery. You will then make one small change through the same route.</p>
+<p>Generate Card Scout from its contract, let OpenCode test and correct its code, then deliver it through Tekton and Argo CD. Ship a second revision to practice the same path again.</p>
 </div>
 <div class="paragraph">
 <p>Generate a small Go application from <code>APP_CONTRACT.md</code>. The platform already owns
@@ -203,10 +202,7 @@ and delivered through Argo CD.</p>
 </td>
 <td class="content">
 <div class="paragraph">
-<p><strong>Run inside Dev Spaces</strong>, not in the bastion: open <strong>Terminal → New Terminal</strong> in
-the browser editor and use the project directory (<code>$PROJECT_SOURCE</code>). Sign in
-to the Dev Spaces website as <code>dev</code>; its terminal receives a separate, limited
-<code>workshop-developer</code> service account for CLI commands.</p>
+<p><strong>Terminal: Dev Spaces</strong> — in the editor, choose <strong>Terminal → New Terminal</strong>.</p>
 </div>
 </td>
 </tr>
@@ -341,8 +337,7 @@ recognize arbitrary uploaded editions.</p>
 <p>The template provides acceptance tests before generation. <code>npm test</code> checks the
 actual Go server and UI against local fixture responses, including errors and retries.
 <code>test:live</code> checks the delivered app against the real platform. OpenCode must run
-both and fix application failures without changing the tests. No filters,
-pagination or saved preferences are required for this minimal app.</p>
+both and fix application failures without changing the tests.</p>
 </div>
 </div>
 </div>
@@ -368,10 +363,7 @@ pagination or saved preferences are required for this minimal app.</p>
 </td>
 <td class="content">
 <div class="paragraph">
-<p><strong>Run inside Dev Spaces</strong>, not in the bastion: open <strong>Terminal → New Terminal</strong> in
-the browser editor and use the project directory (<code>$PROJECT_SOURCE</code>). Sign in
-to the Dev Spaces website as <code>dev</code>; its terminal receives a separate, limited
-<code>workshop-developer</code> service account for CLI commands.</p>
+<p><strong>Terminal: Dev Spaces</strong> — in the editor, choose <strong>Terminal → New Terminal</strong>.</p>
 </div>
 </td>
 </tr>
@@ -390,12 +382,11 @@ oc get application "$APP_NAME" -n "${APP_NAME}-dev" -o json | \
   jq '{revision:.status.sync.revision,sync:.status.sync.status,health:.status.health.status}'
 # Restart the app pods to load the renewed configuration or newly pushed image.
 oc rollout restart deployment/"$APP_NAME" -n "${APP_NAME}-dev"
-# Wait for the named deployment’s new pods to become available within the displayed timeout.
+# Wait for the deployment to become available.
 oc rollout status deployment/"$APP_NAME" -n "${APP_NAME}-dev" --timeout=180s
 # Read the exact built image digest to compare with the running application.
 EXPECTED_DIGEST=$(oc get istag "${APP_NAME}:latest" -n "${APP_NAME}-build" -o jsonpath='{.image.metadata.name}')
-# Inspect pod readiness; for an app digest check, compare the running image with the build
-# result.
+# Verify every app container is Ready and uses the expected image digest.
 oc get pods -n "${APP_NAME}-dev" -l "app.kubernetes.io/name=${APP_NAME}" -o json | \
   jq -e --arg name "$APP_NAME" --arg digest "$EXPECTED_DIGEST" \
   '[.items[].status.containerStatuses[] | select(.name==$name)] | length &gt; 0 and all(.[]; .ready and (.imageID | endswith("@"+$digest)))'

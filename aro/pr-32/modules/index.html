@@ -145,7 +145,7 @@
 <td class="content">
 <div class="paragraph">
 <p><strong>Review preview — PR 32, not the published workshop.</strong>
-This page comes from commit <code>ebcde0ef63f873d183a56da9f1e63c22ea373e71</code> on branch <code>docs/aro-guided-workshop-pr-preview</code>.
+This page comes from commit <code>1e0013a7541bd0e383bc58b6a9cd248a27df5f52</code> on branch <code>docs/aro-guided-workshop-pr-preview</code>.
 Read the changes and leave feedback in
 <a href="https://github.com/fjcloud/aro-ai-app-platform/pull/32">the pull request</a>.
 The production workshop on <code>main</code> is unchanged. The clone command in Act 0
@@ -187,7 +187,7 @@ then consume them as a developer without repeating the platform installation.</p
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Platform engineer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The existing <strong>bastion / WeTTY terminal</strong> beside this guide. Use <code>~/aro-ai-app-platform</code>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The existing <strong>cluster terminal</strong> beside this guide. Use <code>~/aro-ai-app-platform</code>.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>workshop-admin</code>, created in Act 0.</p></td>
 </tr>
 <tr>
@@ -198,10 +198,8 @@ then consume them as a developer without repeating the platform installation.</p
 </tbody>
 </table>
 <div class="paragraph">
-<p>The bastion is already supplied by the environment; you do not deploy one.
-The Dev Spaces terminal is a different shell in a pod on OpenShift. Each command
-block identifies where to run it. Passwords chosen in Act 0 are different from
-the catalog workshop password; models use API keys, not those login passwords.</p>
+<p>Each command block identifies the terminal to use. Browser logins use the
+passwords chosen in Act 0; model APIs use the keys prepared in Act 1.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -232,12 +230,8 @@ the catalog workshop password; models use API keys, not those login passwords.</
 <td class="tableblock halign-left valign-top"><p class="tableblock">An isolation boundary for application resources and permissions; for example <code>llm-serving</code> or <code>card-scout-dev</code>.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">SCC</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Security Context Constraints</strong>: OpenShift admission rules for how pods may run. Developers use the existing restricted policies; they do not grant privileged SCCs.</p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">DSC</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>DataScienceCluster</strong>: the administrator&#8217;s OpenShift AI configuration. It is unrelated to SCCs and is created once for the platform, not by the developer.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>DataScienceCluster</strong>: the administrator&#8217;s OpenShift AI configuration, created in Lab 1.3.</p></td>
 </tr>
 </tbody>
 </table>
@@ -332,7 +326,7 @@ a catalogue aggregate is not a verified 1st Edition valuation.</p>
 </tbody>
 </table>
 <div class="paragraph">
-<p>Allow roughly half a day including operator installation, GPU provisioning and downloads. Operator installation and worker creation use explicit <code>oc</code> / <code>az</code> commands and supplied manifests. Run Acts 0 and 1 in the <strong>bastion terminal</strong>. Act 2 runs in the <strong>Dev Spaces terminal</strong>. Paste shell blocks into the named terminal and prompt blocks into OpenCode; use <code>/exit</code> to return to the shell. JSON responses are formatted with <code>jq</code>.</p>
+<p>Allow roughly half a day including operator installation, GPU provisioning and downloads. Operator installation and worker creation use explicit <code>oc</code> / <code>az</code> commands and supplied manifests. Run Acts 0 and 1 in the <strong>cluster terminal</strong>. Act 2 runs in the <strong>Dev Spaces terminal</strong>. Paste shell blocks into the named terminal and prompt blocks into OpenCode; use <code>/exit</code> to return to the shell. JSON responses are formatted with <code>jq</code>.</p>
 </div>
 </div>
 </div>
@@ -349,8 +343,8 @@ JSON output; it does not create a successful result when the upstream call fails
 <div class="paragraph">
 <p>Waits are marked in <strong>IMPORTANT</strong> callouts with a usual duration and a maximum.
 <code>Waiting for &#8230;&#8203;</code> during an image download is different from <code>ImagePullBackOff</code>,
-a failed condition, or a timeout. Each lab states the expected result and a web
-checkpoint so you can recognize progress instead of just copying commands.</p>
+a failed condition, or a timeout. Each lab includes an expected result and a web
+checkpoint.</p>
 </div>
 </div>
 </div>
@@ -360,7 +354,7 @@ checkpoint so you can recognize progress instead of just copying commands.</p>
 <div class="ulist">
 <ul>
 <li>
-<p>Assigned RHDP <strong>classic ARO</strong> environment, OpenShift 4.21+, Ready workers and WeTTY browser terminal.</p>
+<p>Assigned RHDP <strong>classic ARO</strong> environment, OpenShift 4.21+, Ready workers and browser terminal.</p>
 </li>
 <li>
 <p>Cluster-admin access for the platform role; Act 0 creates separate <code>workshop-admin</code> and <code>dev</code> logins, and Lab 1.7 prepares the developer projects.</p>

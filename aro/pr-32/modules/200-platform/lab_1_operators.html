@@ -146,7 +146,7 @@
 <td class="content">
 <div class="paragraph">
 <p><strong>Review preview — PR 32, not the published workshop.</strong>
-This page comes from commit <code>ebcde0ef63f873d183a56da9f1e63c22ea373e71</code> on branch <code>docs/aro-guided-workshop-pr-preview</code>.
+This page comes from commit <code>1e0013a7541bd0e383bc58b6a9cd248a27df5f52</code> on branch <code>docs/aro-guided-workshop-pr-preview</code>.
 Read the changes and leave feedback in
 <a href="https://github.com/fjcloud/aro-ai-app-platform/pull/32">the pull request</a>.
 The production workshop on <code>main</code> is unchanged. The clone command in Act 0
@@ -159,14 +159,13 @@ uses this review branch so its proposed manifests can be reviewed together.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_what_you_will_do_and_why"><a class="anchor" href="#_what_you_will_do_and_why"></a>What you will do and why</h2>
+<h2 id="_goal"><a class="anchor" href="#_goal"></a>Goal</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p><strong>Goal: Install the controllers the platform needs.</strong>
-An operator is a controller that installs and maintains a product. In this lab you submit the operator subscriptions together, so their downloads can run while you add worker capacity. This saves setup time and gives the next labs the APIs they need. You are installing the managers here, not creating every running service yet.</p>
+<p>Install the operators that manage the IDE, AI services and delivery tools. Their downloads run while you add worker capacity in the next lab; Lab 1.3 then creates the services they manage.</p>
 </div>
 <div class="paragraph">
-<p><strong>Platform Engineer · bastion terminal.</strong> Submit all operator subscriptions together. No installation script is needed.</p>
+<p><strong>Platform Engineer · cluster terminal.</strong> Submit all operator subscriptions together. No installation script is needed.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -176,9 +175,7 @@ An operator is a controller that installs and maintains a product. In this lab y
 </td>
 <td class="content">
 <div class="paragraph">
-<p><strong>Run in the bastion terminal</strong>: the existing browser terminal beside this guide in
-Cloud Terminal. Use the workshop checkout (<code>~/aro-ai-app-platform</code>). Stay signed
-in as <code>workshop-admin</code> for the platform labs; Act 0 explains the initial login.</p>
+<p><strong>Terminal: cluster</strong> — the shell beside this guide.</p>
 </div>
 </td>
 </tr>
@@ -212,7 +209,7 @@ oc get csv -A -l '!olm.copiedFrom'</code></pre>
 <p>OLM resolves dependencies and pulls the controllers in the background. A subscription is not proof that its operator is ready. Next, add CPU capacity and one GPU worker, then wait for the complete operator inventory before creating platform instances.</p>
 </div>
 <div class="paragraph">
-<p>If a subscription reports an error, inspect it with <code>oc describe subscription &lt;name&gt; -n &lt;namespace&gt;</code>. Do not bypass dependency errors or grant privileged SCCs.</p>
+<p>If a subscription reports an error, inspect it with <code>oc describe subscription &lt;name&gt; -n &lt;namespace&gt;</code>. Resolve the reported dependency before continuing.</p>
 </div>
 </div>
 </div>
@@ -292,6 +289,11 @@ A <code>Failed</code> phase or an unresolved subscription is different from a no
 Find OpenShift AI, Dev Spaces, Pipelines and GitOps. Open an operator to see its
 <strong>Subscription</strong> and installed version. Do not create product instances through
 this screen: Lab 1.3 applies their prepared configuration with the CLI.</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<a class="image" href="../_images/workshop-installed-operators.png"><img src="../_images/workshop-installed-operators.png" alt="Installed operators with Succeeded status"></a>
+</div>
 </div>
 <div class="paragraph">
 <p>Continue to <a href="lab_2_workers.html" class="xref page">Lab 1.2 — Add CPU and GPU Workers</a>.</p>

@@ -146,7 +146,7 @@
 <td class="content">
 <div class="paragraph">
 <p><strong>Review preview — PR 32, not the published workshop.</strong>
-This page comes from commit <code>ebcde0ef63f873d183a56da9f1e63c22ea373e71</code> on branch <code>docs/aro-guided-workshop-pr-preview</code>.
+This page comes from commit <code>1e0013a7541bd0e383bc58b6a9cd248a27df5f52</code> on branch <code>docs/aro-guided-workshop-pr-preview</code>.
 Read the changes and leave feedback in
 <a href="https://github.com/fjcloud/aro-ai-app-platform/pull/32">the pull request</a>.
 The production workshop on <code>main</code> is unchanged. The clone command in Act 0
@@ -159,11 +159,10 @@ uses this review branch so its proposed manifests can be reviewed together.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_what_you_will_do_and_why"><a class="anchor" href="#_what_you_will_do_and_why"></a>What you will do and why</h2>
+<h2 id="_goal"><a class="anchor" href="#_goal"></a>Goal</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p><strong>Goal: Prove each API works before asking AI to build the application.</strong>
-Send small, independent requests to D3, DeepSeek and the native agent. Seeing a model choice, a language answer and an actual tool call makes their responsibilities concrete. It also separates API or credential failures from application-code failures, so you do not ask the code generator to debug the wrong layer.</p>
+<p>Test D3, DeepSeek and the native agent independently with <code>curl | jq</code>. Check an image prediction, a language response and a real tool call before generating the application.</p>
 </div>
 <div class="paragraph">
 <p><strong>Developer · Dev Spaces terminal.</strong> Test each capability before writing the app.
@@ -207,10 +206,7 @@ Its model endpoint is provided by OpenShift AI MaaS.</p>
 </td>
 <td class="content">
 <div class="paragraph">
-<p><strong>Run inside Dev Spaces</strong>, not in the bastion: open <strong>Terminal → New Terminal</strong> in
-the browser editor and use the project directory (<code>$PROJECT_SOURCE</code>). Sign in
-to the Dev Spaces website as <code>dev</code>; its terminal receives a separate, limited
-<code>workshop-developer</code> service account for CLI commands.</p>
+<p><strong>Terminal: Dev Spaces</strong> — in the editor, choose <strong>Terminal → New Terminal</strong>.</p>
 </div>
 </td>
 </tr>
@@ -284,10 +280,7 @@ even though Basic Energy has no printed rarity symbol:</p>
 </td>
 <td class="content">
 <div class="paragraph">
-<p><strong>Run inside Dev Spaces</strong>, not in the bastion: open <strong>Terminal → New Terminal</strong> in
-the browser editor and use the project directory (<code>$PROJECT_SOURCE</code>). Sign in
-to the Dev Spaces website as <code>dev</code>; its terminal receives a separate, limited
-<code>workshop-developer</code> service account for CLI commands.</p>
+<p><strong>Terminal: Dev Spaces</strong> — in the editor, choose <strong>Terminal → New Terminal</strong>.</p>
 </div>
 </td>
 </tr>
@@ -320,10 +313,7 @@ curl --fail-with-body -sS --max-time 120 "$D3_URL/v1/systemone" \
 </td>
 <td class="content">
 <div class="paragraph">
-<p><strong>Run inside Dev Spaces</strong>, not in the bastion: open <strong>Terminal → New Terminal</strong> in
-the browser editor and use the project directory (<code>$PROJECT_SOURCE</code>). Sign in
-to the Dev Spaces website as <code>dev</code>; its terminal receives a separate, limited
-<code>workshop-developer</code> service account for CLI commands.</p>
+<p><strong>Terminal: Dev Spaces</strong> — in the editor, choose <strong>Terminal → New Terminal</strong>.</p>
 </div>
 </td>
 </tr>
@@ -339,8 +329,7 @@ curl --fail-with-body -sS --max-time 180 "${OPENAI_BASE_URL}/chat/completions" \
 </div>
 </div>
 <div class="paragraph">
-<p>Expect an actual answer and measured usage. A quota error is a visible failure;
-do not switch the workshop model or substitute a keyword rule.</p>
+<p>Expect an actual answer and measured usage. If you receive a quota error, check the MaaS subscription and Foundry limits.</p>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -351,7 +340,7 @@ do not switch the workshop model or substitute a keyword rule.</p>
 <td class="content">
 <div class="paragraph">
 <p>MaaS keys expire after 24 hours. If a previously working request returns <code>403</code>,
-renew the developer key in the <strong>bastion terminal</strong>:</p>
+renew the developer key in the <strong>cluster terminal</strong>:</p>
 </div>
 <div class="listingblock execute">
 <div class="content">
@@ -383,10 +372,7 @@ API. The prepared service has a separate runtime key for application research.</
 </td>
 <td class="content">
 <div class="paragraph">
-<p><strong>Run inside Dev Spaces</strong>, not in the bastion: open <strong>Terminal → New Terminal</strong> in
-the browser editor and use the project directory (<code>$PROJECT_SOURCE</code>). Sign in
-to the Dev Spaces website as <code>dev</code>; its terminal receives a separate, limited
-<code>workshop-developer</code> service account for CLI commands.</p>
+<p><strong>Terminal: Dev Spaces</strong> — in the editor, choose <strong>Terminal → New Terminal</strong>.</p>
 </div>
 </td>
 </tr>
