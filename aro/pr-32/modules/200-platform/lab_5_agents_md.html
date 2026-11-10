@@ -146,7 +146,7 @@
 <td class="content">
 <div class="paragraph">
 <p><strong>Review preview — PR 32, not the published workshop.</strong>
-This page comes from commit <code>1e0013a7541bd0e383bc58b6a9cd248a27df5f52</code> on branch <code>docs/aro-guided-workshop-pr-preview</code>.
+This page comes from commit <code>5c0ed653aa53e07b50328c8a2ddf563498d59834</code> on branch <code>docs/aro-guided-workshop-pr-preview</code>.
 Read the changes and leave feedback in
 <a href="https://github.com/fjcloud/aro-ai-app-platform/pull/32">the pull request</a>.
 The production workshop on <code>main</code> is unchanged. The clone command in Act 0
@@ -162,7 +162,7 @@ uses this review branch so its proposed manifests can be reviewed together.</p>
 <h2 id="_goal"><a class="anchor" href="#_goal"></a>Goal</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Prepare the developer projects, permissions and app template. The browser account <code>dev</code> will own its workspace; a limited service account gives OpenCode CLI access to build and deploy the app.</p>
+<p>Prepare the developer projects, permissions and app template. The account <code>dev</code> owns its workspace and uses the same identity in <code>oc</code> and OpenCode to build and deploy the app.</p>
 </div>
 <div class="paragraph">
 <p>The Card Scout template is on its own branch: <a href="https://github.com/fjcloud/go-app-template/tree/aro-card-scout">fjcloud/go-app-template</a>.</p>
@@ -239,7 +239,14 @@ uses this review branch so its proposed manifests can be reviewed together.</p>
 <h2 id="_prepare_the_developers_permissions"><a class="anchor" href="#_prepare_the_developers_permissions"></a>Prepare the developer&#8217;s permissions</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Prepare the two application namespaces and inject a scoped developer identity into Dev Spaces. This helper waits for namespace security allocation, creates the limited permissions and mounts a temporary kubeconfig without printing its token.</p>
+<p>Prepare the two application namespaces and grant <code>dev</code> the application and
+delivery permissions. The helper also waits for namespace security allocation
+and prepares the pipeline service account and application image-pull access.</p>
+</div>
+<div class="paragraph">
+<p>Dev Spaces <a href="https://docs.redhat.com/en/documentation/red_hat_openshift_dev_spaces/3.28/html/user_guide/assembly_integrating-with-openshift_user_guide">automatically injects the OpenShift user&#8217;s token</a>
+for <code>oc</code> and <code>kubectl</code>. No separate developer ServiceAccount, token creation or
+custom CLI kubeconfig is needed. OpenCode uses the same user permissions.</p>
 </div>
 <div class="paragraph">
 <p>Run from the cluster terminal before opening Dev Spaces:</p>
@@ -260,17 +267,23 @@ uses this review branch so its proposed manifests can be reviewed together.</p>
 </div>
 <div class="listingblock execute">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh"># Create app/build projects and inject a limited CLI kubeconfig, without printing its token.
+<pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh"># Create app/build projects and grant the developer's namespaced permissions.
 python3 scripts/prepare-developer.py
-# Expect yes: the scoped identity can start application builds.
+# Expect yes: the developer can start application builds.
 oc auth can-i create pipelineruns -n card-scout-build \
-  --as=system:serviceaccount:card-scout-dev:workshop-developer</code></pre>
+  --as=dev</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The injected CLI identity can build and deploy in the two application projects.
-Its token is valid for 24 hours. Run preparation before opening Dev Spaces;
-restart an existing workspace to load the updated credentials.</p>
+<p>These checks run from the platform terminal using impersonation; Lab 2.1 checks
+the actual user identity and permissions inside Dev Spaces. Run preparation
+before opening the workspace.</p>
+</div>
+<div class="paragraph">
+<p>For workspaces created with the previous guide, the helper removes the old
+<code>workshop-developer</code> credentials and <code>KUBECONFIG</code> override from the global
+configuration and <strong>dev-devspaces</strong>. Stop and start an existing workspace, then
+open a new terminal so it loads the native user credentials.</p>
 </div>
 </div>
 </div>
@@ -278,11 +291,11 @@ restart an existing workspace to load the updated credentials.</p>
 <h2 id="_give_the_browser_user_a_prepared_workspace_project"><a class="anchor" href="#_give_the_browser_user_a_prepared_workspace_project"></a>Give the browser user a prepared workspace project</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Browser login and terminal credentials are separate. The HTPasswd user <code>dev</code>
-exists from Act 0, but still needs access to projects in the browser. The following
+<p>The HTPasswd user <code>dev</code> exists from Act 0. The following
 manifest pre-creates <strong>dev-devspaces</strong>, labels it for Dev Spaces discovery, and
 associates it with username <code>dev</code>. It grants namespace administration only in
-that workspace project, and <code>edit</code> only in <strong>card-scout-dev</strong> and <strong>card-scout-build</strong>.</p>
+that workspace project, and <code>edit</code> only in <strong>card-scout-dev</strong> and <strong>card-scout-build</strong>.
+These rights apply both in the browser and to the CLI authenticated as <code>dev</code>.</p>
 </div>
 <div class="admonitionblock note">
 <table>
